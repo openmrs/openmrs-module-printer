@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+
+    <changeSet id="201407091323-1" author="mgoodrich">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="emr_printer" />
+            </not>
+        </preConditions>
+
+        <comment>Adds printer table</comment>
+        <createTable tableName="emr_printer">
+
+            <column name="printer_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="ip_address" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="port" type="varchar(10)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="physical_location" type="int"/>
+
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="printer_physical_location_location_id_fk"
+                                 baseTableName="emr_printer" baseColumnNames="physical_location"
+                                 referencedTableName="location" referencedColumnNames="location_id"/>
+
+        <addForeignKeyConstraint constraintName="printer_creator_user_id_fk"
+                                 baseTableName="emr_paper_record_request" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+    </changeSet>
+
+</databaseChangeLog>

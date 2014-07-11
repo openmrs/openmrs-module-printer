@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>PIH</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+	<require_version>${openMRSVersion}</require_version>
+	<!-- / Module Properties -->
+
+	
+	<!-- Module Activator -->
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.PrinterModuleActivator</activator>
+
+
+    <!-- Required Modules -->
+    <require_modules>
+        <require_module version="${emrApiModuleVersion}">org.openmrs.module.emrapi</require_module>
+        <require_module version="${uicommonsModuleVersion}">org.openmrs.module.uicommons</require_module>
+        <require_module version="${uiframeworkModuleVersion}">org.openmrs.module.uiframework</require_module>
+     </require_modules>
+    <!-- / Required Modules -->
+
+
+    <!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+	    Printer.hbm.xml
+    </mappingFiles>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>ht</lang>
+		<file>messages_ht.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+    <!--Privileges -->
+    <privilege>
+        <name>Printers - Access Printers</name>
+        <description>Gives API-level access within the Printer service to fetch information about printers</description>
+    </privilege>
+    <privilege>
+        <name>Printers - Manage Printers</name>
+        <description>Gives API-level access within the Printer service to manage and update printer information
+        </description>
+    </privilege>
+    <!-- /Privileges -->
+
+</module>
+
