@@ -40,7 +40,7 @@ public class DefaultPrintersFragmentController {
             return new FailureResult(e.getMessage());
         }
 
-        String successMessage = ui.message("printer.defaultUpdate", ui.message("emr.printer." + type), ui.format(location));
+        String successMessage = ui.message("printer.defaultUpdate", ui.message("printer." + type), ui.format(location));
         return new SuccessResult(successMessage);
     }
 
