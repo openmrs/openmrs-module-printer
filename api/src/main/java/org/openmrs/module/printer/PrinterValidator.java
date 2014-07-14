@@ -70,45 +70,45 @@ public class PrinterValidator implements Validator {
 
         if (StringUtils.isBlank(printer.getName())) {
             errors.rejectValue("name", "error.required",
-                    new Object[]{messageSourceService.getMessage("emr.printer.name")}, null);
+                    new Object[]{messageSourceService.getMessage("printer.name")}, null);
         }
 
         if (StringUtils.isBlank(printer.getIpAddress())) {
             errors.rejectValue("ipAddress", "error.required",
-                    new Object[]{messageSourceService.getMessage("emr.printer.ipAddress")}, null);
+                    new Object[]{messageSourceService.getMessage("printer.ipAddress")}, null);
         }
 
         if (StringUtils.isBlank(printer.getPort())) {
             errors.rejectValue("port", "error.required",
-                    new Object[]{messageSourceService.getMessage("emr.printer.port")}, null);
+                    new Object[]{messageSourceService.getMessage("printer.port")}, null);
         }
 
         if (printer.getType() == null) {
             errors.rejectValue("type", "error.required",
-                    new Object[]{messageSourceService.getMessage("emr.printer.type")}, null);
+                    new Object[]{messageSourceService.getMessage("printer.type")}, null);
         }
 
         if (printer.getName() != null && printer.getName().length() > 256) {
-            errors.rejectValue("name", "emr.printer.error.nameTooLong", null, null);
+            errors.rejectValue("name", "printer.error.nameTooLong", null, null);
         }
 
         if (printer.getIpAddress() != null && printer.getIpAddress().length() > 50) {
-            errors.rejectValue("ipAddress", "emr.printer.error.ipAddressTooLong", null, null);
+            errors.rejectValue("ipAddress", "printer.error.ipAddressTooLong", null, null);
         }
 
         if (printerService.isNameAllocatedToAnotherPrinter(printer)) {
-            errors.rejectValue("name", "emr.printer.error.nameDuplicate", null, null);
+            errors.rejectValue("name", "printer.error.nameDuplicate", null, null);
         }
 
         // verify ip address
         if (printer.getIpAddress() != null) {
 
             if (!(ipV4Pattern.matcher(printer.getIpAddress()).matches() || ipV6Pattern.matcher(printer.getIpAddress()).matches())) {
-                errors.rejectValue("ipAddress", "emr.printer.error.ipAddressInvalid", null, null);
+                errors.rejectValue("ipAddress", "printer.error.ipAddressInvalid", null, null);
             }
 
             if (printerService.isIpAddressAllocatedToAnotherPrinter(printer)) {
-                errors.rejectValue("ipAddress", "emr.printer.error.ipAddressInUse", null, null);
+                errors.rejectValue("ipAddress", "printer.error.ipAddressInUse", null, null);
             }
         }
 
@@ -120,11 +120,11 @@ public class PrinterValidator implements Validator {
             try {
                 portInteger = Integer.parseInt(printer.getPort());
                 if (portInteger < 0 || portInteger > 65536) {
-                    errors.rejectValue("port", "emr.printer.error.portInvalid", null, null);
+                    errors.rejectValue("port", "printer.error.portInvalid", null, null);
                 }
 
             } catch (NumberFormatException e) {
-                errors.rejectValue("port", "emr.printer.error.portInvalid", null, null);
+                errors.rejectValue("port", "printer.error.portInvalid", null, null);
             }
 
         }

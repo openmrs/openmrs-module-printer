@@ -27,7 +27,7 @@
                          printer: jq(this).val() };
 
             jq.ajax({
-                url: '${ ui.actionLink('emr','printer/defaultPrinters','saveDefaultPrinter') }',
+                url: '${ ui.actionLink('printer','defaultPrinters','saveDefaultPrinter') }',
                 data: data,
                 dataType: 'json',
                 type: 'POST'

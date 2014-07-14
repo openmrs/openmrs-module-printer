@@ -18,7 +18,7 @@
     var breadcrumbs = [
         { icon: "icon-home", link: '/' + OPENMRS_CONTEXT_PATH + '/index.htm' },
         { label: "${ ui.message("coreapps.app.systemAdministration.label")}", link: '${ui.pageLink("coreapps", "systemadministration/systemAdministration")}' },
-        { label: "${ ui.message("printer.managePrinters")}" , link: '${ui.pageLink("emr", "printer/managePrinters")}' },
+        { label: "${ ui.message("printer.managePrinters")}" , link: '${ui.pageLink("printer", "managePrinters")}' },
         { label: "${ ui.message("printer.add")}" }
     ];
 
@@ -50,7 +50,7 @@
     </fieldset>
 
     <div>
-        <input type="button" class="cancel" value="${ ui.message("emr.cancel") }" onclick="javascript:window.location='${ ui.pageLink("emr", "printer/managePrinters") }'" />
+        <input type="button" class="cancel" value="${ ui.message("emr.cancel") }" onclick="javascript:window.location='${ ui.pageLink("printer", "managePrinters") }'" />
         <input type="submit" class="confirm" value="${ ui.message("emr.save") }" />
     </div>
 

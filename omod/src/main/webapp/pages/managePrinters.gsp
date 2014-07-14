@@ -10,7 +10,7 @@
 </script>
 <h3>${  ui.message("printer.managePrinters") }</h3>
 <div>
-    <a href="/${ contextPath }/emr/printer/printer.page" class="button">${ ui.message("printer.add") }</a>
+    <a href="/${ contextPath }/printer/printer.page" class="button">${ ui.message("printer.add") }</a>
 </div>
 <br/>
 <table>
@@ -44,7 +44,7 @@
             ${ ui.format(it.port) }
         </td>
         <td>
-            <a href="/${ contextPath }/emr/printer/printer.page?printerId=${ it.printerId }">
+            <a href="/${ contextPath }/printer/printer.page?printerId=${ it.printerId }">
                 <button>${ ui.message("emr.edit") }</button>
             </a>
         </td>

@@ -61,12 +61,12 @@ public class PrinterPageController {
                 request.getSession().setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_TOAST_MESSAGE, "true");
                 request.getSession().setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_INFO_MESSAGE, "emr.printer.saved");
 
-                return "redirect:/emr/printer/managePrinters.page";
+                return "redirect:/printer/managePrinters.page";
             }
             catch (Exception e) {
                 log.warn("Some error occured while saving account details:", e);
                 request.getSession().setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_ERROR_MESSAGE,
-                        "emr.printer.error.save.fail");
+                        "printer.error.save.fail");
             }
         }
         else {

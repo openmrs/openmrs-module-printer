@@ -49,7 +49,7 @@ public class DefaultPrintersFragmentControllerTest {
         Mockito.verify(printerService).setDefaultPrinter(location, type, printer);
         Assert.assertThat(result, CoreMatchers.instanceOf(SuccessResult.class));
         SuccessResult success = (SuccessResult) result;
-        Assert.assertThat(success.getMessage(), Is.is("emr.printer.defaultUpdate:emr.printer." + type + "," + location.getName()));
+        Assert.assertThat(success.getMessage(), Is.is("printer.defaultUpdate:printer." + type + "," + location.getName()));
     }
 
 }
