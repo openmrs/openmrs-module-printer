@@ -13,6 +13,12 @@
     labelPrinters.sort { it.name }.each {
         labelPrinterOptions.push([ label: ui.format(it.name) + ' (' + ui.format(it.physicalLocation) + ')', value: it.id ])
     }
+
+    def wristbandPrinterOptions = []
+
+    wristbandPrinters.sort { it.name }.each {
+        wristbandPrinterOptions.push([ label: ui.format(it.name) + ' (' + ui.format(it.physicalLocation) + ')', value: it.id ])
+    }
 %>
 
 <script type="text/javascript">
@@ -67,6 +73,9 @@
         <th>
             ${ ui.message("printer.defaultPrinterTable.labelPrinter.label") }
         </th>
+        <th>
+            ${ ui.message("printer.defaultPrinterTable.wristbandPrinter.label") }
+        </th>
     </tr>
 
 
@@ -80,6 +89,10 @@
 
                 <td>
                     ${ ui.includeFragment("uicommons", "field/dropDown", [ id: "LABEL-" + it.key.id, formFieldName: "LABEL-" + it.key.id, emptyOptionLabel: ui.message("printer.defaultPrinterTable.emptyOption.label"), initialValue: it.value.labelPrinter?.id ?: '', options: labelPrinterOptions ])}
+                </td>
+
+                <td>
+                    ${ ui.includeFragment("uicommons", "field/dropDown", [ id: "WRISTBAND-" + it.key.id, formFieldName: "WRISTBAND-" + it.key.id, emptyOptionLabel: ui.message("printer.defaultPrinterTable.emptyOption.label"), initialValue: it.value.wristbandPrinter?.id ?: '', options: wristbandPrinterOptions ])}
                 </td>
             </tr>
 

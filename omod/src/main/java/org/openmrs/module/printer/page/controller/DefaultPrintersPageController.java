@@ -37,15 +37,20 @@ public class DefaultPrintersPageController {
 
         Map<Location,Map<String,Printer>> locationsToPrintersMap = new HashMap<Location, Map<String,Printer>>();
 
+        // TODO: change this so that we don't have to manually add each new printer type, should be dynamic based on type enum!
+        // TODO: also fix this in the defaultPrinters.gsp as well
+
         for (Location location : locations) {
             Map<String,Printer> printersForLocation = new HashMap<String, Printer>();
             printersForLocation.put("idCardPrinter", printerService.getDefaultPrinter(location, Printer.Type.ID_CARD));
             printersForLocation.put("labelPrinter", printerService.getDefaultPrinter(location, Printer.Type.LABEL));
+            printersForLocation.put("wristbandPrinter", printerService.getDefaultPrinter(location, Printer.Type.WRISTBAND));
             locationsToPrintersMap.put(location, printersForLocation);
         }
 
         model.put("locationsToPrintersMap", locationsToPrintersMap);
         model.addAttribute("idCardPrinters", printerService.getPrintersByType(Printer.Type.ID_CARD));
         model.addAttribute("labelPrinters", printerService.getPrintersByType(Printer.Type.LABEL));
+        model.addAttribute("wristbandPrinters", printerService.getPrintersByType(Printer.Type.WRISTBAND));
     }
 }

@@ -117,6 +117,27 @@ public class PrinterModuleActivator implements ModuleActivator {
                 locationService.saveLocationAttributeType(defaultIdCardPrinterAttributeType);
             }
         }
-    }
 
+        LocationAttributeType defaultWristbandPrinterAttributeType =
+                locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get("WRISTBAND"));
+
+        if (defaultWristbandPrinterAttributeType == null) {
+            defaultWristbandPrinterAttributeType = new LocationAttributeType();
+            defaultWristbandPrinterAttributeType.setUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get("WRISTBAND"));
+            defaultWristbandPrinterAttributeType.setDatatypeClassname(PrinterDatatype.class.getName());
+            defaultWristbandPrinterAttributeType.setDatatypeConfig("WRISTBAND");
+            defaultWristbandPrinterAttributeType.setMaxOccurs(1);
+            defaultWristbandPrinterAttributeType.setMinOccurs(0);
+            defaultWristbandPrinterAttributeType.setName("Default Wristband Printer");
+            defaultWristbandPrinterAttributeType.setDescription("The default wristband printer for this location");
+
+            locationService.saveLocationAttributeType(defaultWristbandPrinterAttributeType);
+        } else {
+            // if you change any field values above, you need to set them here, so existing servers can be updated
+            boolean changed = GeneralUtils.setPropertyIfDifferent(defaultWristbandPrinterAttributeType, "datatypeClassname", PrinterDatatype.class.getName());
+            if (changed) {
+                locationService.saveLocationAttributeType(defaultWristbandPrinterAttributeType);
+            }
+        }
+    }
 }

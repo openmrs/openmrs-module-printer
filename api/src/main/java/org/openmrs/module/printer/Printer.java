@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class Printer extends BaseOpenmrsObject {
 
-    public enum Type {ID_CARD, LABEL, WRISTBAND};
+    public enum Type { ID_CARD, LABEL, WRISTBAND };
 
     private Integer printerId;
 
