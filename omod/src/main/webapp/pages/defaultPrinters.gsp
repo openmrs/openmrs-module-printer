@@ -42,7 +42,7 @@
                         emr.successMessage(data.message);
                     })
                     .error(function(xhr, status, err) {
-                        emr.errorMessage('${ ui.message("printer.error.defaultUpdate") }')
+                        emr.errorMessage("${ ui.message('printer.error.defaultUpdate') }")  // double-quotes to avoid accent issues
                     })
 
         });
