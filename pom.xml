@@ -43,6 +43,7 @@
         <uiframeworkModuleVersion>3.2</uiframeworkModuleVersion>
         <uicommonsModuleVersion>1.2</uicommonsModuleVersion>
         <appuiModuleVersion>1.1</appuiModuleVersion>
+        <htmlformentryVersion>2.4-SNAPSHOT</htmlformentryVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -121,6 +122,13 @@
             <version>${appuiModuleVersion}</version>
             <type>test-jar</type>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>htmlformentry-api</artifactId>
+            <version>${htmlformentryVersion}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- OpenMRS modules simply required to fire up the application context when running component tests -->
