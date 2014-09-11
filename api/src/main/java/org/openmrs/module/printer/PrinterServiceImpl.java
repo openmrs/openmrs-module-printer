@@ -21,10 +21,10 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.module.printer.db.PrinterDAO;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -116,6 +116,20 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
 
         return (Printer) defaultPrinters.get(0).getValue();
+    }
+
+    @Override
+    public List<Location> getLocationsWithDefaultPrinter(Printer.Type type) {
+
+        List<Location> locationsWithDefaultPrinter = new ArrayList<Location>();
+
+        for (Location location : locationService.getAllLocations(false)) {
+            if (getDefaultPrinter(location, type) !=null) {
+                locationsWithDefaultPrinter.add(location);
+            }
+        }
+
+        return locationsWithDefaultPrinter;
     }
 
     @Override

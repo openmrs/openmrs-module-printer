@@ -140,7 +140,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldSetDefaultLabelPrinterForLocation() {
 
-        Location location = locationService.getLocation(2);
+        Location location = locationService.getLocation(1);
         Printer printer = printerService.getPrinterById(1);
 
         printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
@@ -152,8 +152,8 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldGetDefaultLabelPrinterForLocation() {
 
-        Location location = locationService.getLocation(3);
-        Printer printer = printerService.getPrinterById(1);  // this has been set as the default printer for location 3 in dataset
+        Location location = locationService.getLocation(2);
+        Printer printer = printerService.getPrinterById(1);  // this has been set as the default printer for location 2 in dataset
 
         Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
@@ -163,7 +163,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldUpdateDefaultLabelPrinterForLocation() {
 
-        Location location = locationService.getLocation(3); // a default printer for location 3 in has been set in the dataset
+        Location location = locationService.getLocation(2); // a default printer for location 2 in has been set in the dataset
 
         // create a new printer and set it as the default for this location
         Printer printer = new Printer();
@@ -181,11 +181,25 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
 
     @Test
     public void testShouldRemoveDefaultLabelPrinterForLocation() {
-        Location location = locationService.getLocation(3); // a default printer for location 3 in has been set in the dataset
+        Location location = locationService.getLocation(2); // a default printer for location 2 in has been set in the dataset
         printerService.setDefaultPrinter(location, Printer.Type.LABEL, null);
 
         Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
         Assert.assertNull(fetchedPrinter);
+    }
+
+    @Test
+    public void testShouldGetAllLocationsWithDefaultPrinter() {
+
+        List<Location> locations = printerService.getLocationsWithDefaultPrinter(Printer.Type.LABEL);
+
+        // in the test dataset, only location 2 has a default label printer
+        Assert.assertEquals(2, locations.size());
+
+        // poor man's test to make sure that list contains all proper values
+        Assert.assertTrue((locations.get(0).getId() == 1 && locations.get(1).getId() == 2)
+                            || (locations.get(1).getId() == 1 && locations.get(0).getId() == 2) );
+
     }
 
     @Test(expected = APIException.class)

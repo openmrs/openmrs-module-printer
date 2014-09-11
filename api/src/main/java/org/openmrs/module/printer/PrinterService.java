@@ -91,6 +91,14 @@ public interface PrinterService extends OpenmrsService {
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
     Printer getDefaultPrinter(Location location, Printer.Type type);
 
+    /**
+     * Returns all locations that have a default printer configured of the specified type
+     *
+     * @param type
+     * @return
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    List<Location> getLocationsWithDefaultPrinter(Printer.Type type);
 
     /**
      * Given a printer, returns true/false if that ip address is in use
@@ -159,4 +167,6 @@ public interface PrinterService extends OpenmrsService {
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
     void printViaSocket(String data, Printer printer, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException;
+
+
 }
