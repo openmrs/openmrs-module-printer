@@ -21,11 +21,21 @@
 		<url>http://openmrs.org</url>
 	</organization>
 
-	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/printer/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/printer/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/printer/trunk/</url>
-	</scm>
+
+    <scm>
+        <connection>scm:git:git@github.com:openmrs/openmrs-module-printer.git</connection>
+        <developerConnection>scm:git:git@github.com:printer/openmrs-module-printer.git</developerConnection>
+        <url>scm:git:git@github.com:printer/openmrs-module-printer.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>openmrs-repo-modules</id>
+            <name>Modules</name>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/modules/</url>
+        </repository>
+    </distributionManagement>
 
 	<modules>
 		<module>api</module>
