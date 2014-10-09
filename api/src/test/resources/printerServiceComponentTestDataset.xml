@@ -11,4 +11,8 @@
     <location_attribute location_attribute_id="2" attribute_type_id="1001" location_id="1" value_reference="1" creator="1" voided="0" date_created="2006-01-18 00:00:00.0" uuid="777cb3c3-1e77-42c6-8f03-2a0c1e9ca2a8"/>
 
 
+    <location location_id="1" name="Unknown Location" description="The default location used when limited information is known" address1="" address2="" city_village="" state_province="" postal_code="" country="" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="dc5c1fcc-0459-4201-bf70-0b90535ba362"/>
+    <location location_id="2" name="Xanadu" description="A metaphor for opulence, most famously in the English Romantic Samuel Taylor Coleridge&apos;s poem Kubla Khan." address1="800 Boylston Street" address2="" city_village="Boston" state_province="MA" postal_code="02115" country="USA" latitude="" longitude="" creator="1" date_created="2008-08-15 13:46:50.0" retired="false" uuid="9356400c-a5a2-4532-8f2b-2361b3446eb8"/>
+
+
 </dataset>
