@@ -24,8 +24,8 @@
 
     <scm>
         <connection>scm:git:git@github.com:openmrs/openmrs-module-printer.git</connection>
-        <developerConnection>scm:git:git@github.com:printer/openmrs-module-printer.git</developerConnection>
-        <url>scm:git:git@github.com:printer/openmrs-module-printer.git</url>
+        <developerConnection>scm:git:git@github.com:openmrs/openmrs-module-printer.git</developerConnection>
+        <url>scm:git:git@github.com:openmrs/openmrs-module-printer.git</url>
         <tag>HEAD</tag>
     </scm>
 
