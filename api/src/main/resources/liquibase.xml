@@ -58,7 +58,7 @@
                                  referencedTableName="location" referencedColumnNames="location_id"/>
 
         <addForeignKeyConstraint constraintName="printer_creator_user_id_fk"
-                                 baseTableName="emr_paper_record_request" baseColumnNames="creator"
+                                 baseTableName="emr_printer" baseColumnNames="creator"
                                  referencedTableName="users" referencedColumnNames="user_id" />
 
     </changeSet>
