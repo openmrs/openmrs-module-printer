@@ -6,7 +6,7 @@
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
 
-    <changeSet id="201407091323-1" author="mgoodrich">
+    <changeSet id="201407091323-1a" author="mgoodrich">
 
         <preConditions onFail="MARK_RAN">
             <not>
@@ -57,10 +57,17 @@
                                  baseTableName="emr_printer" baseColumnNames="physical_location"
                                  referencedTableName="location" referencedColumnNames="location_id"/>
 
+    </changeSet>
+
+
+    <changeSet id="20141014-1c" author="mgoodrich">
+        <comment>Add missing foreign key constraint</comment>
+
         <addForeignKeyConstraint constraintName="printer_creator_user_id_fk"
                                  baseTableName="emr_printer" baseColumnNames="creator"
                                  referencedTableName="users" referencedColumnNames="user_id" />
 
     </changeSet>
+
 
 </databaseChangeLog>
