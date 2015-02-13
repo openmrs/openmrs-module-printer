@@ -59,7 +59,7 @@ public class PrinterValidatorTest {
 
     @Test
     public void validate_shouldRejectAnEmptyName() throws Exception {
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -71,7 +71,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectAnEmptyIpAddress() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setPort("8080");
 
         Errors errors = new BindException(printer, "printer");
@@ -82,7 +82,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectAnEmptyPort() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("");  // need to do this because port has a default value
 
@@ -107,7 +107,7 @@ public class PrinterValidatorTest {
         printer.setName("Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer " +
                 "Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer " +
                 "Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer ");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -119,7 +119,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectIpAddressGreaterThan50Characters() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10");
         printer.setPort("8080");
 
@@ -131,7 +131,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_validPrinterShouldPass() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("192.1.1.1");
 
         Errors errors = new BindException(printer, "printer");
@@ -142,7 +142,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_invalidIpAddressShouldFail() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10-ABC%");
         printer.setPort("8080");
 
@@ -157,7 +157,7 @@ public class PrinterValidatorTest {
         when(printerService.isIpAddressAllocatedToAnotherPrinter(any(Printer.class))).thenReturn(true);
 
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -169,7 +169,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_invalidPortAddressShouldFail() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10-ABC%");
         printer.setPort("8ABC");
 

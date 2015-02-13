@@ -18,7 +18,7 @@ public class PrinterVelocityFunctions {
     /**
      * Example usage in Html Form: <includeIf velocityTest="$printer.fn.isDefaultPrinterConfigured($sessionContext.sessionLocation, $printer.type.WRISTBAND)">
      */
-    public boolean isDefaultPrinterConfigured(Location location, Printer.Type type) {
+    public boolean isDefaultPrinterConfigured(Location location, PrinterType type) {
         return printerService.getDefaultPrinter(location, type) != null ? true : false;
     }
 
@@ -26,7 +26,7 @@ public class PrinterVelocityFunctions {
      * Example usage in Html Form: (to render a list of uuids that could be assigned to a javascript variable
      * <lookup complexExpression="#set ($locations = $printer.fn.getLocationsWithDefaultPrinter($printer.type.LABEL)) #foreach ($location in $locations)'$location.uuid'#if ($velocityCount <= $locations.size() - 1),#end#end"/>
      */
-    public List<Location> getLocationsWithDefaultPrinter(Printer.Type type) {
+    public List<Location> getLocationsWithDefaultPrinter(PrinterType type) {
         return printerService.getLocationsWithDefaultPrinter(type);
     }
 

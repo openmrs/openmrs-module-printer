@@ -19,6 +19,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
+import org.openmrs.module.printer.PrinterType;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 
@@ -42,15 +43,15 @@ public class DefaultPrintersPageController {
 
         for (Location location : locations) {
             Map<String,Printer> printersForLocation = new HashMap<String, Printer>();
-            printersForLocation.put("idCardPrinter", printerService.getDefaultPrinter(location, Printer.Type.ID_CARD));
-            printersForLocation.put("labelPrinter", printerService.getDefaultPrinter(location, Printer.Type.LABEL));
-            printersForLocation.put("wristbandPrinter", printerService.getDefaultPrinter(location, Printer.Type.WRISTBAND));
+            printersForLocation.put("idCardPrinter", printerService.getDefaultPrinter(location, PrinterType.ID_CARD));
+            printersForLocation.put("labelPrinter", printerService.getDefaultPrinter(location, PrinterType.LABEL));
+            printersForLocation.put("wristbandPrinter", printerService.getDefaultPrinter(location, PrinterType.WRISTBAND));
             locationsToPrintersMap.put(location, printersForLocation);
         }
 
         model.put("locationsToPrintersMap", locationsToPrintersMap);
-        model.addAttribute("idCardPrinters", printerService.getPrintersByType(Printer.Type.ID_CARD));
-        model.addAttribute("labelPrinters", printerService.getPrintersByType(Printer.Type.LABEL));
-        model.addAttribute("wristbandPrinters", printerService.getPrintersByType(Printer.Type.WRISTBAND));
+        model.addAttribute("idCardPrinters", printerService.getPrintersByType(PrinterType.ID_CARD));
+        model.addAttribute("labelPrinters", printerService.getPrintersByType(PrinterType.LABEL));
+        model.addAttribute("wristbandPrinters", printerService.getPrintersByType(PrinterType.WRISTBAND));
     }
 }

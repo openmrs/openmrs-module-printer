@@ -16,6 +16,7 @@ package org.openmrs.module.printer.db;
 
 import org.openmrs.module.emrapi.db.SingleClassDAO;
 import org.openmrs.module.printer.Printer;
+import org.openmrs.module.printer.PrinterType;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface PrinterDAO extends SingleClassDAO<Printer> {
      * @param type
      * @return
      */
-    List<Printer> getPrintersByType(Printer.Type type);
+    List<Printer> getPrintersByType(PrinterType type);
 
     /**
      * Given a printer, returns true/false if that ip address is in use

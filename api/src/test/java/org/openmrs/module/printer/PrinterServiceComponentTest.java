@@ -47,7 +47,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Another Test Printer");
         printer.setIpAddress("192.1.1.8");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         printerService.savePrinter(printer);
 
@@ -68,7 +68,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Another printer");
         differentPrinter.setIpAddress("192.1.1.2");   // printer in test dataset has this ip
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertTrue(printerService.isIpAddressAllocatedToAnotherPrinter(differentPrinter));
 
@@ -80,13 +80,13 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer localPrinter = new Printer();
         localPrinter.setName("Local printer");
         localPrinter.setIpAddress("127.0.0.1");
-        localPrinter.setType(Printer.Type.LABEL);
+        localPrinter.setType(PrinterType.LABEL);
         printerService.savePrinter(localPrinter);
 
         Printer anotherPrinter = new Printer();
         anotherPrinter.setName("Another printer");
         anotherPrinter.setIpAddress("127.0.0.1");
-        anotherPrinter.setType(Printer.Type.ID_CARD);
+        anotherPrinter.setType(PrinterType.ID_CARD);
 
         Assert.assertFalse(printerService.isIpAddressAllocatedToAnotherPrinter(anotherPrinter));
 
@@ -98,7 +98,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Another printer");
         differentPrinter.setIpAddress("192.1.1.8");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertFalse(printerService.isIpAddressAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -121,7 +121,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Test Printer");
         differentPrinter.setIpAddress("192.1.1.9");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertTrue(printerService.isNameAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -132,7 +132,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Test Printer With Different Name");
         differentPrinter.setIpAddress("192.1.1.9");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertFalse(printerService.isNameAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -143,9 +143,9 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Location location = locationService.getLocation(1);
         Printer printer = printerService.getPrinterById(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
     }
 
@@ -155,7 +155,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Location location = locationService.getLocation(2);
         Printer printer = printerService.getPrinterById(1);  // this has been set as the default printer for location 2 in dataset
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
 
     }
@@ -169,12 +169,12 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Another Test Printer");
         printer.setIpAddress("192.1.1.8");
-        printer.setType(Printer.Type.LABEL);
+        printer.setType(PrinterType.LABEL);
 
         printerService.savePrinter(printer);
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
     }
 
@@ -182,16 +182,16 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldRemoveDefaultLabelPrinterForLocation() {
         Location location = locationService.getLocation(2); // a default printer for location 2 in has been set in the dataset
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, null);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, null);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertNull(fetchedPrinter);
     }
 
     @Test
     public void testShouldGetAllLocationsWithDefaultPrinter() {
 
-        List<Location> locations = printerService.getLocationsWithDefaultPrinter(Printer.Type.LABEL);
+        List<Location> locations = printerService.getLocationsWithDefaultPrinter(PrinterType.LABEL);
 
         // in the test dataset, only location 2 has a default label printer
         Assert.assertEquals(2, locations.size());
@@ -210,7 +210,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Test Label Printer");
         printer.setIpAddress("192.1.1.9");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         LocationAttributeType defaultIdCardPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get("LABEL"));
 
@@ -226,7 +226,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldGetPrinterByType() {
 
-        List<Printer> printers = printerService.getPrintersByType(Printer.Type.LABEL);
+        List<Printer> printers = printerService.getPrintersByType(PrinterType.LABEL);
         Assert.assertEquals(1, printers.size());
         Assert.assertEquals("Test Printer", printers.get(0).getName());
 

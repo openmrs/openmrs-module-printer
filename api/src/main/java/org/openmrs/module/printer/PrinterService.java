@@ -17,8 +17,10 @@ package org.openmrs.module.printer;
 import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.printer.handler.PrintHandler;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO move this out of the emrapi module
@@ -50,7 +52,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    List<Printer> getPrintersByType(Printer.Type type);
+    List<Printer> getPrintersByType(PrinterType type);
 
     /**
      * Saves a printer
@@ -78,7 +80,7 @@ public interface PrinterService extends OpenmrsService {
      * @param printer
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
-    void setDefaultPrinter(Location location, Printer.Type type, Printer printer);
+    void setDefaultPrinter(Location location, PrinterType type, Printer printer);
 
     /**
      * Gets the printer of the specified type that is the default printer
@@ -89,7 +91,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    Printer getDefaultPrinter(Location location, Printer.Type type);
+    Printer getDefaultPrinter(Location location, PrinterType type);
 
     /**
      * Returns all locations that have a default printer configured of the specified type
@@ -98,7 +100,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    List<Location> getLocationsWithDefaultPrinter(Printer.Type type);
+    List<Location> getLocationsWithDefaultPrinter(PrinterType type);
 
     /**
      * Given a printer, returns true/false if that ip address is in use
@@ -127,7 +129,7 @@ public interface PrinterService extends OpenmrsService {
      * @param location
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    void printViaSocket(String data, Printer.Type type, Location location, String encoding)
+    void printViaSocket(String data, PrinterType type, Location location, String encoding)
             throws UnableToPrintViaSocketException;
 
 
@@ -141,7 +143,7 @@ public interface PrinterService extends OpenmrsService {
      * @param wait time in ms to wait after printing before allowing another job to be sent to same printer
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    void printViaSocket(String data, Printer.Type type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
+    void printViaSocket(String data, PrinterType type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException;
 
     /**
@@ -168,5 +170,22 @@ public interface PrinterService extends OpenmrsService {
     void printViaSocket(String data, Printer printer, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException;
 
+
+    /**
+     * Prints to the specified printer, using the print handler associated with that printer
+     * Parameters to pass in vary: for example, the SocketPrintHandler (the default print handler) expects
+     * a "data" key in the paramMap, where the value is the content to send out over socket
+     *
+     * @param paramMap used to pass parameters and contents to the print handler
+     * @param printer the printer to print to
+     * @param printInSeparateThread true/false whether to print a separate thread (will not catch errors)
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    void print(Map<String,Object> paramMap, Printer printer, Boolean printInSeparateThread)
+        throws UnableToPrintException;
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    void print(Map<String,Object> paramMap, Printer printer, Boolean printInSeparateThread, PrintHandler printHandler)
+            throws UnableToPrintException;
 
 }

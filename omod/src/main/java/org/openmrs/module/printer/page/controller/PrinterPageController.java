@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
+import org.openmrs.module.printer.PrinterType;
 import org.openmrs.module.printer.PrinterValidator;
 import org.openmrs.module.uicommons.UiCommonsConstants;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -83,7 +84,7 @@ public class PrinterPageController {
 
     private void addReferenceData(PageModel model, LocationService locationService) {
         model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("printerTypeOptions", Printer.Type.values());
+        model.addAttribute("printerTypeOptions", PrinterType.values());
     }
 
 }

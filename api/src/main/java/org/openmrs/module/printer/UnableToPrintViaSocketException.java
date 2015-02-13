@@ -14,7 +14,7 @@
 
 package org.openmrs.module.printer;
 
-public class UnableToPrintViaSocketException extends Exception {
+public class UnableToPrintViaSocketException extends UnableToPrintException {
 
     private static final long serialVersionUID = 1L;
 
