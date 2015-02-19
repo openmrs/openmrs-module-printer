@@ -16,16 +16,24 @@ package org.openmrs.module.printer;
 
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
+import org.openmrs.module.printer.handler.PrintHandler;
+import org.openmrs.module.printer.handler.SocketPrintHandler;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest {
 
@@ -230,5 +238,130 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Assert.assertEquals(1, printers.size());
         Assert.assertEquals("Test Printer", printers.get(0).getName());
 
+    }
+
+    @Test
+    public void testSavePrinterModel() {
+
+        PrinterModel printerModel = new PrinterModel();
+        printerModel.setName("Another Test Printer Model");
+        printerModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        printerModel.setType(PrinterType.ID_CARD);
+
+        printerService.savePrinterModel(printerModel);
+
+        List<PrinterModel> printerModels = printerService.getAllPrinterModels();
+
+        // there is already a test printer model in the dataset, so there should be two printers now
+        Assert.assertEquals(2, printerModels.size());
+
+        // make sure the audit fields have been set
+        Assert.assertNotNull(printerModel.getDateCreated());
+        Assert.assertNotNull(printerModel.getCreator());
+        Assert.assertNotNull(printerModel.getUuid());
+    }
+
+    @Test
+    public void testShouldReturnTrueIfAnotherPrinterModelAlreadyHasSameName() {
+
+        PrinterModel differentPrinterModel = new PrinterModel();
+        differentPrinterModel.setName("Test Printer Model");
+        differentPrinterModel.setType(PrinterType.LABEL);
+        differentPrinterModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+
+        Assert.assertTrue(printerService.isNameAllocatedToAnotherPrinterModel(differentPrinterModel));
+    }
+
+
+    @Test
+    public void testShouldReturnFalseIfAnotherPrinterModelDoesntHaveSameName() {
+
+        PrinterModel differentPrinterModel = new PrinterModel();
+        differentPrinterModel.setName("Different Printer Model Name");
+        differentPrinterModel.setType(PrinterType.LABEL);
+        differentPrinterModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+
+        Assert.assertFalse(printerService.isNameAllocatedToAnotherPrinterModel(differentPrinterModel));
+    }
+
+    @Test
+    public void testShouldGetPrinterModelByType() {
+
+        List<PrinterModel> printerModels = printerService.getPrinterModelsByType(PrinterType.ID_CARD);
+        Assert.assertEquals(0, printerModels.size());
+
+        printerModels = printerService.getPrinterModelsByType(PrinterType.LABEL);
+        Assert.assertEquals(1, printerModels.size());
+        Assert.assertEquals("Test Printer Model", printerModels.get(0).getName());
+    }
+
+    @Test
+    public void byDefaultOnlySocketPrintHandlerIsAvailable() {
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(1, printHandlers.size());
+        Assert.assertEquals(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME, printHandlers.iterator().next().getBeanName());
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldAddNewPrintHandler() {
+        printerService.registerPrintHandler(new MockPrintHandler());
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(2, printHandlers.size());
+
+
+        List<String> handlerNames = new ArrayList<String>();
+        Iterator<PrintHandler> i = printHandlers.iterator();
+        while (i.hasNext()) {
+            handlerNames.add(i.next().getBeanName());
+        }
+
+        Assert.assertTrue(handlerNames.contains("mockPrintHandler"));
+        Assert.assertTrue(handlerNames.contains("socketPrintHandler"));
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldUnregisterPrintHandler() {
+        printerService.unregisterPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(0, printHandlers.size());
+    }
+
+    @Test
+    public void unregisterPrintHandlerShouldNotFailIfHandlerNotFound() {
+        printerService.unregisterPrintHandler("blah");
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(1, printHandlers.size());
+    }
+
+    @Test
+    public void shouldFetchPrintHandlerByBeanName() {
+        PrintHandler printHandler = printerService.getRegisteredPrintHandlerByName(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        Assert.assertEquals(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME, printHandler.getBeanName());
+    }
+
+    @Test
+    public void shouldReturnNullIfNoHandlerMatchingName() {
+        PrintHandler printHandler = printerService.getRegisteredPrintHandlerByName("bogus name");
+        Assert.assertNull(printHandler);
+    }
+
+    public class MockPrintHandler implements PrintHandler {
+
+        @Override
+        public String getDisplayName() {
+            return "Mock Print Handler";
+        }
+
+        @Override
+        public String getBeanName() {
+            return "mockPrintHandler";
+        }
+
+        @Override
+        public void print(Printer printer, Map<String, Object> paramMap) throws UnableToPrintException {
+            // do nothing
+        }
     }
 }

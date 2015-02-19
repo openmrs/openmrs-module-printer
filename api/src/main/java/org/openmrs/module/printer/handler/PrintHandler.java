@@ -6,5 +6,10 @@ import org.openmrs.module.printer.UnableToPrintException;
 import java.util.Map;
 
 public interface PrintHandler {
-    public void print(Printer printer, Map<String,Object> paramMap) throws UnableToPrintException;
+
+    String getDisplayName();
+
+    String getBeanName();
+
+    void print(Printer printer, Map<String,Object> paramMap) throws UnableToPrintException;
 }

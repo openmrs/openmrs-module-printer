@@ -23,7 +23,7 @@ public class PrintThreadTest {
         Map<String, Object> paramMap1 = new HashMap<String, Object>();
         paramMap1.put("wait", 10000);
         Map<String, Object> paramMap2 = new HashMap<String, Object>();
-        paramMap1.put("wait", 1000);
+        paramMap2.put("wait", 1000);
 
 
         Thread thread1 = new Thread(new PrintThread(printer, paramMap1, printerLock, new MockPrintHandler()));
@@ -38,10 +38,19 @@ public class PrintThreadTest {
         // if the synchronization is not working right, thread2 will terminate before thread1 since thread1 has a ten-second delay and thread 2 only has a 1 second delay
         assertThat(thread1.getState(), is(Thread.State.TERMINATED));
 
-
     }
 
     public class MockPrintHandler implements PrintHandler {
+
+        @Override
+        public String getDisplayName() {
+            return "Mock Print Handler";
+        }
+
+        @Override
+        public String getBeanName() {
+            return "mockPrinterHandler";
+        }
 
         @Override
         public void print(Printer printer, Map<String, Object> paramMap) throws UnableToPrintException {

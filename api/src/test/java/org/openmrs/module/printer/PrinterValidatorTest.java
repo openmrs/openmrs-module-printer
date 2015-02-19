@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Person;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.printer.validator.PrinterValidator;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 

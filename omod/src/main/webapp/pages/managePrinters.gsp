@@ -18,13 +18,14 @@
         <th>${ ui.message("printer.type") }</th>
         <th>${ ui.message("printer.physicalLocation") }</th>
         <th>${ ui.message("printer.name") }</th>
+        <th>${ ui.message("printer.model") }</th>
         <th>${ ui.message("printer.ipAddress") }</th>
         <th>${ ui.message("printer.port") }</th>
         <th>&nbsp;</th>
     </tr>
 
     <% if (!printers) { %>
-        <tr><td colspan="6">${ ui.message("emr.none") }</td></tr>
+        <tr><td colspan="7">${ ui.message("emr.none") }</td></tr>
     <% } %>
     <% printers.sort { it.name }.each {   %>
     <tr>
@@ -36,6 +37,9 @@
         </td>
         <td>
             ${ ui.format(it.name) }
+        </td>
+        <td>
+            ${ ui.format(it.model?.name) }
         </td>
         <td>
             ${ ui.format(it.ipAddress) }

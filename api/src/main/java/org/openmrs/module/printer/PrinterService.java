@@ -19,6 +19,7 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.printer.handler.PrintHandler;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,40 @@ public interface PrinterService extends OpenmrsService {
     List<Printer> getAllPrinters();
 
     /**
+     * Fetches a printer model by id
+     *
+     * @param id
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    PrinterModel getPrinterModelById(Integer id);
+
+    /**
+     * Fetches all printer models of the specified type
+     *
+     * @param type
+     * @return
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    List<PrinterModel> getPrinterModelsByType(PrinterType type);
+
+    /**
+     * Saves a printer model
+     *
+     * @param printerModel to save
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void savePrinterModel(PrinterModel printerModel);
+
+    /**
+     * Fetches all printer model in the system
+     *
+     * @return all printers models in the system
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    List<PrinterModel> getAllPrinterModels();
+
+
+    /**
      * Sets the specified printer as the default printer of the specified type
      * at the specified location; if printer = null, remove any default printer
      * of that type at that location
@@ -120,6 +155,16 @@ public interface PrinterService extends OpenmrsService {
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
     boolean isNameAllocatedToAnotherPrinter(Printer printer);
+
+    /**
+     * Given a printer model, returns true/false if that name is in use
+     * by *another* printer model
+     *
+     * @return
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    boolean isNameAllocatedToAnotherPrinterModel(PrinterModel printerModel);
+
 
     /**
      * Prints the string data to the default printer of the specified type
@@ -187,5 +232,17 @@ public interface PrinterService extends OpenmrsService {
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
     void print(Map<String,Object> paramMap, Printer printer, Boolean printInSeparateThread, PrintHandler printHandler)
             throws UnableToPrintException;
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    Collection<PrintHandler> getRegisteredPrintHandlers();
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    PrintHandler getRegisteredPrintHandlerByName(String beanName);
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void registerPrintHandler(PrintHandler printHandler);
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void unregisterPrintHandler(String beanName);
 
 }

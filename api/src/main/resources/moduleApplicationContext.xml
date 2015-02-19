@@ -32,7 +32,23 @@
                         </property>
                     </bean>
                 </property>
+                <property name="printerModelDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.db.HibernatePrinterModelDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory"/>
+                        </property>
+                    </bean>
+                </property>
                 <property name="locationService" ref="locationService"/>
+                <property name="printHandlers">
+                    <map>
+                        <entry>
+                            <key><value>socketPrintHandler</value></key>
+                            <bean class="org.openmrs.module.printer.handler.SocketPrintHandler"/>
+                        </entry>
+                    </map>
+                </property>
+
             </bean>
         </property>
         <property name="preInterceptors">
@@ -53,6 +69,7 @@
     </bean>
 
     <!-- add type converters -->
-    <bean class="org.openmrs.module.printer.StringToPrinterConverter"/>
+    <bean class="org.openmrs.module.printer.converter.StringToPrinterConverter"/>
+    <bean class="org.openmrs.module.printer.converter.StringToPrinterModelConverter"/>
 
 </beans>

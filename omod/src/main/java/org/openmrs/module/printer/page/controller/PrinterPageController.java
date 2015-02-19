@@ -20,7 +20,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
 import org.openmrs.module.printer.PrinterType;
-import org.openmrs.module.printer.PrinterValidator;
+import org.openmrs.module.printer.validator.PrinterValidator;
 import org.openmrs.module.uicommons.UiCommonsConstants;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -65,7 +65,7 @@ public class PrinterPageController {
                 return "redirect:/printer/managePrinters.page";
             }
             catch (Exception e) {
-                log.warn("Some error occured while saving account details:", e);
+                log.warn("Some error occured while saving printer details:", e);
                 request.getSession().setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_ERROR_MESSAGE,
                         "printer.error.save.fail");
             }

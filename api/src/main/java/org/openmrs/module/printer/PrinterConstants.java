@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class PrinterConstants {
 
-    public static final String SOCKET_PRINT_HANDLER = "socketPrintHandler";
+    public static final String SOCKET_PRINT_HANDLER_BEAN_NAME = "socketPrintHandler";
 
     public static final String PRIVILEGE_PRINTERS_ACCESS_PRINTERS = "Printers - Access Printers";
 

@@ -69,5 +69,85 @@
 
     </changeSet>
 
+    <changeSet id="20150217-1" author="mgoodrich">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="emr_printer" />
+        </preConditions>
+
+        <comment>Rename printer table to have proper module prefix</comment>
+        <renameTable newTableName="printer_printer"
+                     oldTableName="emr_printer" />
+    </changeSet>
+
+    <changeSet id="20150217-2" author="mgoodrich">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="printer_printer_model" />
+            </not>
+        </preConditions>
+
+        <comment>Adds printer model table</comment>
+        <createTable tableName="printer_printer_model">
+
+            <column name="printer_model_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="printer_handler" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="printer_model_creator_user_id_fk"
+                                 baseTableName="printer_printer_model" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+    </changeSet>
+
+
+    <changeSet id="20150217-3" author="mgoodrich">
+        <comment>Add model column to printer table</comment>
+
+        <addColumn tableName="printer_printer">
+            <column name="model" type="int"/>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="printer_model_printer_model_id_fk"
+                                 baseTableName="printer_printer" baseColumnNames="model"
+                                 referencedTableName="printer_printer_model" referencedColumnNames="printer_model_id" />
+    </changeSet>
+
+
+
+    <changeSet id="20150219-1" author="mgoodrich">
+        <comment>Rename printer_handler column</comment>
+
+        <renameColumn columnDataType="varchar(255)"
+                      newColumnName="print_handler"
+                      oldColumnName="printer_handler"
+                      tableName="printer_printer_model"/>
+    </changeSet>
 
 </databaseChangeLog>

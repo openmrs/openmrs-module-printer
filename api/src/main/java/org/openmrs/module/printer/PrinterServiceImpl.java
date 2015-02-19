@@ -24,11 +24,12 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.printer.db.PrinterDAO;
+import org.openmrs.module.printer.db.PrinterModelDAO;
 import org.openmrs.module.printer.handler.PrintHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +41,11 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
     private PrinterDAO printerDAO;
 
+    private PrinterModelDAO printerModelDAO;
+
     private LocationService locationService;
 
-    @Autowired
-    private Map<String,PrintHandler> printHandlers;
-
+    private Map<String,PrintHandler> printHandlers = new HashMap<String, PrintHandler>();
 
     /**
      * A map from the id of an identifier source, to an object we can lock on for that identifier source
@@ -52,13 +53,20 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
      */
     private ConcurrentHashMap<Integer, Object> printerLocks = new ConcurrentHashMap<Integer, Object>();
 
-
     public void setPrinterDAO(PrinterDAO printerDAO) {
         this.printerDAO = printerDAO;
     }
 
+    public void setPrinterModelDAO(PrinterModelDAO printerModelDAO) {
+        this.printerModelDAO = printerModelDAO;
+    }
+
     public void setLocationService(LocationService locationService) {
         this.locationService = locationService;
+    }
+
+    public void setPrintHandlers(Map<String, PrintHandler> printHandlers) {
+        this.printHandlers = printHandlers;
     }
 
     @Override
@@ -89,6 +97,26 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     @Transactional(readOnly = true)
     public List<Printer> getAllPrinters() {
         return printerDAO.getAll();
+    }
+
+    @Override
+    public PrinterModel getPrinterModelById(Integer id) {
+        return printerModelDAO.getById(id);
+    }
+
+    @Override
+    public List<PrinterModel> getAllPrinterModels() {
+        return printerModelDAO.getAll();
+    }
+
+    @Override
+    public void savePrinterModel(PrinterModel printerModel) {
+        printerModelDAO.saveOrUpdate(printerModel);
+    }
+
+    @Override
+    public List<PrinterModel> getPrinterModelsByType(PrinterType type) {
+        return printerModelDAO.getPrinterModelsByType(type);
     }
 
     @Override
@@ -160,6 +188,11 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
+    public boolean isNameAllocatedToAnotherPrinterModel(PrinterModel printerModel) {
+        return printerModelDAO.isNameAllocatedToAnotherPrinterModel(printerModel);
+    }
+
+    @Override
     public void printViaSocket(String data, PrinterType type, Location location, String encoding) throws UnableToPrintViaSocketException {
         printViaSocket(data, type, location, encoding, false, null);
     }
@@ -193,7 +226,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         paramMap.put("data", data);
 
         try {
-            print(paramMap, printer, printInSeparateThread, printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER));
+            print(paramMap, printer, printInSeparateThread, printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME) );
         }
         catch (UnableToPrintException e) {
             throw new UnableToPrintViaSocketException("Unable to print via socket to printer " + printer,e);
@@ -215,7 +248,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
         else {
             // default handler is the socket handler
-            handler = printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER);
+            handler = printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
         }
 
         print(paramMap, printer, printInSeparateThread, handler);
@@ -231,6 +264,33 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
         else {
             printThread.print();
+        }
+    }
+
+    @Override
+    public Collection<PrintHandler> getRegisteredPrintHandlers() {
+        return printHandlers.values();
+    }
+
+    @Override
+    public void registerPrintHandler(PrintHandler printHandler) {
+        printHandlers.put(printHandler.getBeanName(), printHandler);
+    }
+
+    @Override
+    public PrintHandler getRegisteredPrintHandlerByName(String beanName) {
+        if (printHandlers.containsKey(beanName)) {
+            return printHandlers.get(beanName);
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public void unregisterPrintHandler(String beanName) {
+        if(printHandlers.containsKey(beanName)) {
+            printHandlers.remove(beanName);
         }
     }
 

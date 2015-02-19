@@ -6,7 +6,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterConstants;
 import org.openmrs.module.printer.UnableToPrintViaSocketException;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,10 +14,19 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Map;
 
-@Component(value = PrinterConstants.SOCKET_PRINT_HANDLER)
 public class SocketPrintHandler implements PrintHandler {
 
     private final Log log = LogFactory.getLog(getClass());
+
+    @Override
+    public String getDisplayName() {
+        return "Socket Print Handler";
+    }
+
+    @Override
+    public String getBeanName() {
+        return PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME;
+    }
 
     @Override
     public void print(Printer printer, Map<String, Object> paramMap) throws UnableToPrintViaSocketException
