@@ -68,7 +68,7 @@ public class PrinterModelPageController {
     }
 
     private void addReferenceData(PageModel model, PrinterService printerService) {
-        model.addAttribute("printerTypeOptions", PrinterType.values());
+        model.addAttribute("printerTypes", PrinterType.values());
         model.addAttribute("printHandlers", printerService.getRegisteredPrintHandlers());
     }
 }

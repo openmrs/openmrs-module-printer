@@ -32,6 +32,13 @@
             <scope>test</scope>
         </dependency>
 
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>uicommons-omod</artifactId>
+			<version>${uicommonsModuleVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- End OpenMRS modules -->
 
 	</dependencies>

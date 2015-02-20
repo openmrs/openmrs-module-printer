@@ -16,7 +16,6 @@ package org.openmrs.module.printer;
 
 import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
@@ -24,7 +23,6 @@ import org.openmrs.LocationAttributeType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.printer.handler.PrintHandler;
-import org.openmrs.module.printer.handler.SocketPrintHandler;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -68,6 +66,42 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Assert.assertNotNull(printer.getDateCreated());
         Assert.assertNotNull(printer.getCreator());
         Assert.assertNotNull(printer.getUuid());
+    }
+
+    @Test
+    public void testDeletePrinter() {
+
+        List<Printer> printers = printerService.getAllPrinters();
+
+        // sanity check
+        Assert.assertEquals(1, printers.size());
+
+        printerService.deletePrinter(printers.get(0));
+
+        printers = printerService.getAllPrinters();
+        Assert.assertEquals(0, printers.size());
+    }
+
+    @Test
+    public void testDeletePrinterShouldUnassignItAsDefaultForALocation() {
+
+        LocationAttributeType defaultLabelPrinter = locationService.getLocationAttributeType(1001);
+
+        // sanity check
+        Location loc1 = locationService.getLocation(1);
+        Location loc2 = locationService.getLocation(2);
+        Assert.assertEquals(1, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(1, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        List<Printer> printers = printerService.getAllPrinters();
+        printerService.deletePrinter(printers.get(0));
+
+        Assert.assertEquals(0, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(0, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        // make sure we can save the locations even those they have voided attributes that reference deleted printers
+        locationService.saveLocation(loc1);
+        locationService.saveLocation(loc2);
     }
 
     @Test
@@ -259,6 +293,21 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Assert.assertNotNull(printerModel.getDateCreated());
         Assert.assertNotNull(printerModel.getCreator());
         Assert.assertNotNull(printerModel.getUuid());
+    }
+
+    @Test
+    public void testDeletePrinterModel() {
+
+        List<PrinterModel> printerModels = printerService.getAllPrinterModels();
+
+        // sanity check
+        Assert.assertEquals(1, printerModels.size());
+
+        printerService.deletePrinterModel(printerModels.get(0));
+
+        printerModels = printerService.getAllPrinterModels();
+        Assert.assertEquals(0, printerModels.size());
+
     }
 
     @Test

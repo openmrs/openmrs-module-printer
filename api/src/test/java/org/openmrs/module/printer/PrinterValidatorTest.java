@@ -184,4 +184,22 @@ public class PrinterValidatorTest {
         assertTrue(errors.hasFieldErrors("port"));
     }
 
+    @Test
+    public void validate_printerTypeMustMatchPrinterModelType() throws Exception {
+
+        PrinterModel model = new PrinterModel();
+        model.setType(PrinterType.LABEL);
+
+        printer.setName("Test Printer");
+        printer.setType(PrinterType.ID_CARD);
+        printer.setIpAddress("10-ABC%");
+        printer.setPort("8ABC");
+        printer.setModel(model);
+
+
+        Errors errors = new BindException(printer, "printer");
+        validator.validate(printer, errors);
+        assertTrue(errors.hasFieldErrors("type"));
+    }
+
 }

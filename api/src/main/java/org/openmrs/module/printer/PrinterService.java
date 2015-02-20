@@ -72,6 +72,14 @@ public interface PrinterService extends OpenmrsService {
     List<Printer> getAllPrinters();
 
     /**
+     * Purges the specified printer
+     *
+     * @param printer printer to purge
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void deletePrinter(Printer printer);
+
+    /**
      * Fetches a printer model by id
      *
      * @param id
@@ -104,6 +112,13 @@ public interface PrinterService extends OpenmrsService {
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
     List<PrinterModel> getAllPrinterModels();
 
+    /**
+     * Purges the specified printer model
+     *
+     * @param printerModel printerModel to purge
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void deletePrinterModel(PrinterModel printerModel);
 
     /**
      * Sets the specified printer as the default printer of the specified type

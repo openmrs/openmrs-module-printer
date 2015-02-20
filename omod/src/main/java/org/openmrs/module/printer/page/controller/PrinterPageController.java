@@ -43,8 +43,10 @@ public class PrinterPageController {
         return printer;
     }
 
-    public void get(PageModel model, @MethodParam("getPrinter") Printer printer, @SpringBean("locationService")LocationService locationService) {
-        addReferenceData(model, locationService);
+    public void get(PageModel model, @MethodParam("getPrinter") Printer printer,
+                    @SpringBean("printerService")  PrinterService printerService,
+                    @SpringBean("locationService") LocationService locationService) {
+        addReferenceData(model, locationService, printerService);
         model.addAttribute("printer", printer);
     }
 
@@ -76,15 +78,16 @@ public class PrinterPageController {
         }
 
         // redisplay the form with errors
-        addReferenceData(model, locationService);
+        addReferenceData(model, locationService, printerService);
         model.addAttribute("errors", errors);
         model.addAttribute("printer", printer);
         return null;
     }
 
-    private void addReferenceData(PageModel model, LocationService locationService) {
+    private void addReferenceData(PageModel model, LocationService locationService, PrinterService printerService) {
         model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("printerTypeOptions", PrinterType.values());
+        model.addAttribute("printerTypes", PrinterType.values());
+        model.addAttribute("printerModels", printerService.getAllPrinterModels());
     }
 
 }

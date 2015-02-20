@@ -90,6 +90,10 @@ public class PrinterValidator implements Validator {
                     new Object[]{messageSourceService.getMessage("printer.type")}, null);
         }
 
+        if (printer.getModel() != null && printer.getModel().getType() != printer.getType()) {
+            errors.rejectValue("type", "printer.error.typeMismatch", null, null);
+        }
+
         if (printer.getName() != null && printer.getName().length() > 256) {
             errors.rejectValue("name", "printer.error.nameTooLong", null, null);
         }

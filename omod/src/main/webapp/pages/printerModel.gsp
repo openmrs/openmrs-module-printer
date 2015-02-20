@@ -3,7 +3,7 @@
 
     def typeOptions = []
 
-    printerTypeOptions.each {
+    printerTypes.each {
         typeOptions.push([ label: ui.message("printer." + it), value:it ])
     }
 

@@ -100,26 +100,45 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
+    @Transactional
+    public void deletePrinter(Printer printer) {
+        // make sure this printer isn't assigned as the default printer for any locations
+        removePrinterAsDefault(printer);
+        printerDAO.delete(printer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PrinterModel getPrinterModelById(Integer id) {
         return printerModelDAO.getById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PrinterModel> getAllPrinterModels() {
         return printerModelDAO.getAll();
     }
 
     @Override
+    @Transactional
     public void savePrinterModel(PrinterModel printerModel) {
         printerModelDAO.saveOrUpdate(printerModel);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PrinterModel> getPrinterModelsByType(PrinterType type) {
         return printerModelDAO.getPrinterModelsByType(type);
     }
 
     @Override
+    @Transactional
+    public void deletePrinterModel(PrinterModel printerModel) {
+        printerModelDAO.delete(printerModel);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public void setDefaultPrinter(Location location, PrinterType type, Printer printer) {
 
         LocationAttributeType locationAttributeType = getLocationAttributeTypeDefaultPrinter(type);
@@ -140,6 +159,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Printer getDefaultPrinter(Location location, PrinterType type) {
 
         List<LocationAttribute> defaultPrinters = location.getActiveAttributes(getLocationAttributeTypeDefaultPrinter(type));
@@ -156,6 +176,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Location> getLocationsWithDefaultPrinter(PrinterType type) {
 
         List<Location> locationsWithDefaultPrinter = new ArrayList<Location>();
@@ -188,6 +209,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isNameAllocatedToAnotherPrinterModel(PrinterModel printerModel) {
         return printerModelDAO.isNameAllocatedToAnotherPrinterModel(printerModel);
     }
@@ -311,5 +333,21 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
 
         return locationAttributeType;
+    }
+
+    private void removePrinterAsDefault(Printer printer) {
+
+        LocationAttributeType type = getLocationAttributeTypeDefaultPrinter(printer.getType());
+
+        Map<LocationAttributeType, Object> attributeValues = new HashMap<LocationAttributeType, Object>();
+        attributeValues.put(type, printer);
+
+        for (Location location: locationService.getLocations(null, null,attributeValues, true, null, null)) {
+            for (LocationAttribute attr : location.getActiveAttributes(type)) {
+                attr.setVoided(true);
+            }
+            locationService.saveLocation(location);
+        }
+
     }
 }
