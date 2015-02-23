@@ -6,7 +6,7 @@
     var breadcrumbs = [
         { icon: "icon-home", link: '/' + OPENMRS_CONTEXT_PATH + '/index.htm' },
         { label: "${ ui.message("coreapps.app.systemAdministration.label")}", link: '${ui.pageLink("coreapps", "systemadministration/systemAdministration")}' },
-        { label: "${ ui.message("printer.administration.manage")}" }
+        { label: "${ ui.message("printer.administration")}" }
     ];
 </script>
 

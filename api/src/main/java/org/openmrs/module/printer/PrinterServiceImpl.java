@@ -138,7 +138,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void setDefaultPrinter(Location location, PrinterType type, Printer printer) {
 
         LocationAttributeType locationAttributeType = getLocationAttributeTypeDefaultPrinter(type);
