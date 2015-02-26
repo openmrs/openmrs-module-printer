@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>printer</artifactId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Printer Module Module</name>
 	<description>Provides basic fucnctionality for managing printers on a network and sending print jobs via sockets</description>
