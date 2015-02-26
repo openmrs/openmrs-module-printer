@@ -22,8 +22,6 @@ import java.util.Date;
 
 public class Printer extends BaseOpenmrsObject {
 
-    public enum Type { ID_CARD, LABEL, WRISTBAND };
-
     private Integer printerId;
 
     private String name;
@@ -32,7 +30,9 @@ public class Printer extends BaseOpenmrsObject {
 
     private String port;
 
-    private Type type;
+    private PrinterType type;
+
+    private PrinterModel model;
 
     private Location physicalLocation;
 
@@ -83,12 +83,20 @@ public class Printer extends BaseOpenmrsObject {
         return port;
     }
 
-    public Type getType() {
+    public PrinterType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(PrinterType type) {
         this.type = type;
+    }
+
+    public PrinterModel getModel() {
+        return model;
+    }
+
+    public void setModel(PrinterModel model) {
+        this.model = model;
     }
 
     public void setPort(String port) {

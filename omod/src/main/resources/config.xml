@@ -33,6 +33,7 @@
     <!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 	    Printer.hbm.xml
+        PrinterModel.hbm.xml
     </mappingFiles>
 
 	<!-- Internationalization -->

@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Person;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.printer.validator.PrinterValidator;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
@@ -59,7 +60,7 @@ public class PrinterValidatorTest {
 
     @Test
     public void validate_shouldRejectAnEmptyName() throws Exception {
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -71,7 +72,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectAnEmptyIpAddress() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setPort("8080");
 
         Errors errors = new BindException(printer, "printer");
@@ -82,7 +83,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectAnEmptyPort() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("");  // need to do this because port has a default value
 
@@ -107,7 +108,7 @@ public class PrinterValidatorTest {
         printer.setName("Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer " +
                 "Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer " +
                 "Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer Test Printer ");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -119,7 +120,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_shouldRejectIpAddressGreaterThan50Characters() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10");
         printer.setPort("8080");
 
@@ -131,7 +132,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_validPrinterShouldPass() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("192.1.1.1");
 
         Errors errors = new BindException(printer, "printer");
@@ -142,7 +143,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_invalidIpAddressShouldFail() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10-ABC%");
         printer.setPort("8080");
 
@@ -157,7 +158,7 @@ public class PrinterValidatorTest {
         when(printerService.isIpAddressAllocatedToAnotherPrinter(any(Printer.class))).thenReturn(true);
 
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10.10.10.10");
         printer.setPort("8080");
 
@@ -169,7 +170,7 @@ public class PrinterValidatorTest {
     @Test
     public void validate_invalidPortAddressShouldFail() throws Exception {
         printer.setName("Test Printer");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
         printer.setIpAddress("10-ABC%");
         printer.setPort("8ABC");
 
@@ -181,6 +182,24 @@ public class PrinterValidatorTest {
         printer.setPort("777777");
         validator.validate(printer, errors);
         assertTrue(errors.hasFieldErrors("port"));
+    }
+
+    @Test
+    public void validate_printerTypeMustMatchPrinterModelType() throws Exception {
+
+        PrinterModel model = new PrinterModel();
+        model.setType(PrinterType.LABEL);
+
+        printer.setName("Test Printer");
+        printer.setType(PrinterType.ID_CARD);
+        printer.setIpAddress("10-ABC%");
+        printer.setPort("8ABC");
+        printer.setModel(model);
+
+
+        Errors errors = new BindException(printer, "printer");
+        validator.validate(printer, errors);
+        assertTrue(errors.hasFieldErrors("type"));
     }
 
 }

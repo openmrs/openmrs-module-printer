@@ -17,8 +17,11 @@ package org.openmrs.module.printer;
 import org.openmrs.Location;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.printer.handler.PrintHandler;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO move this out of the emrapi module
@@ -50,7 +53,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    List<Printer> getPrintersByType(Printer.Type type);
+    List<Printer> getPrintersByType(PrinterType type);
 
     /**
      * Saves a printer
@@ -69,6 +72,55 @@ public interface PrinterService extends OpenmrsService {
     List<Printer> getAllPrinters();
 
     /**
+     * Purges the specified printer
+     *
+     * @param printer printer to purge
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void deletePrinter(Printer printer);
+
+    /**
+     * Fetches a printer model by id
+     *
+     * @param id
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    PrinterModel getPrinterModelById(Integer id);
+
+    /**
+     * Fetches all printer models of the specified type
+     *
+     * @param type
+     * @return
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    List<PrinterModel> getPrinterModelsByType(PrinterType type);
+
+    /**
+     * Saves a printer model
+     *
+     * @param printerModel to save
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void savePrinterModel(PrinterModel printerModel);
+
+    /**
+     * Fetches all printer model in the system
+     *
+     * @return all printers models in the system
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    List<PrinterModel> getAllPrinterModels();
+
+    /**
+     * Purges the specified printer model
+     *
+     * @param printerModel printerModel to purge
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void deletePrinterModel(PrinterModel printerModel);
+
+    /**
      * Sets the specified printer as the default printer of the specified type
      * at the specified location; if printer = null, remove any default printer
      * of that type at that location
@@ -78,7 +130,7 @@ public interface PrinterService extends OpenmrsService {
      * @param printer
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
-    void setDefaultPrinter(Location location, Printer.Type type, Printer printer);
+    void setDefaultPrinter(Location location, PrinterType type, Printer printer);
 
     /**
      * Gets the printer of the specified type that is the default printer
@@ -89,7 +141,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    Printer getDefaultPrinter(Location location, Printer.Type type);
+    Printer getDefaultPrinter(Location location, PrinterType type);
 
     /**
      * Returns all locations that have a default printer configured of the specified type
@@ -98,7 +150,7 @@ public interface PrinterService extends OpenmrsService {
      * @return
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    List<Location> getLocationsWithDefaultPrinter(Printer.Type type);
+    List<Location> getLocationsWithDefaultPrinter(PrinterType type);
 
     /**
      * Given a printer, returns true/false if that ip address is in use
@@ -120,6 +172,16 @@ public interface PrinterService extends OpenmrsService {
     boolean isNameAllocatedToAnotherPrinter(Printer printer);
 
     /**
+     * Given a printer model, returns true/false if that name is in use
+     * by *another* printer model
+     *
+     * @return
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    boolean isNameAllocatedToAnotherPrinterModel(PrinterModel printerModel);
+
+
+    /**
      * Prints the string data to the default printer of the specified type
      * at the specific location via socket
      *
@@ -127,7 +189,7 @@ public interface PrinterService extends OpenmrsService {
      * @param location
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    void printViaSocket(String data, Printer.Type type, Location location, String encoding)
+    void printViaSocket(String data, PrinterType type, Location location, String encoding)
             throws UnableToPrintViaSocketException;
 
 
@@ -141,7 +203,7 @@ public interface PrinterService extends OpenmrsService {
      * @param wait time in ms to wait after printing before allowing another job to be sent to same printer
      */
     @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
-    void printViaSocket(String data, Printer.Type type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
+    void printViaSocket(String data, PrinterType type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException;
 
     /**
@@ -168,5 +230,34 @@ public interface PrinterService extends OpenmrsService {
     void printViaSocket(String data, Printer printer, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException;
 
+
+    /**
+     * Prints to the specified printer, using the print handler associated with that printer
+     * Parameters to pass in vary: for example, the SocketPrintHandler (the default print handler) expects
+     * a "data" key in the paramMap, where the value is the content to send out over socket
+     *
+     * @param paramMap used to pass parameters and contents to the print handler
+     * @param printer the printer to print to
+     * @param printInSeparateThread true/false whether to print a separate thread (will not catch errors)
+     */
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    void print(Map<String,Object> paramMap, Printer printer, Boolean printInSeparateThread)
+        throws UnableToPrintException;
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    void print(Map<String,Object> paramMap, Printer printer, Boolean printInSeparateThread, PrintHandler printHandler)
+            throws UnableToPrintException;
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    Collection<PrintHandler> getRegisteredPrintHandlers();
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_ACCESS_PRINTERS)
+    PrintHandler getRegisteredPrintHandlerByName(String beanName);
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void registerPrintHandler(PrintHandler printHandler);
+
+    @Authorized(PrinterConstants.PRIVILEGE_PRINTERS_MANAGE_PRINTERS)
+    void unregisterPrintHandler(String beanName);
 
 }

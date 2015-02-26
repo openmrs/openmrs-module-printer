@@ -19,7 +19,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
-import org.openmrs.module.printer.PrinterValidator;
+import org.openmrs.module.printer.PrinterType;
+import org.openmrs.module.printer.validator.PrinterValidator;
 import org.openmrs.module.uicommons.UiCommonsConstants;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -42,8 +43,10 @@ public class PrinterPageController {
         return printer;
     }
 
-    public void get(PageModel model, @MethodParam("getPrinter") Printer printer, @SpringBean("locationService")LocationService locationService) {
-        addReferenceData(model, locationService);
+    public void get(PageModel model, @MethodParam("getPrinter") Printer printer,
+                    @SpringBean("printerService")  PrinterService printerService,
+                    @SpringBean("locationService") LocationService locationService) {
+        addReferenceData(model, locationService, printerService);
         model.addAttribute("printer", printer);
     }
 
@@ -64,7 +67,7 @@ public class PrinterPageController {
                 return "redirect:/printer/managePrinters.page";
             }
             catch (Exception e) {
-                log.warn("Some error occured while saving account details:", e);
+                log.warn("Some error occured while saving printer details:", e);
                 request.getSession().setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_ERROR_MESSAGE,
                         "printer.error.save.fail");
             }
@@ -75,15 +78,16 @@ public class PrinterPageController {
         }
 
         // redisplay the form with errors
-        addReferenceData(model, locationService);
+        addReferenceData(model, locationService, printerService);
         model.addAttribute("errors", errors);
         model.addAttribute("printer", printer);
         return null;
     }
 
-    private void addReferenceData(PageModel model, LocationService locationService) {
+    private void addReferenceData(PageModel model, LocationService locationService, PrinterService printerService) {
         model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("printerTypeOptions", Printer.Type.values());
+        model.addAttribute("printerTypes", PrinterType.values());
+        model.addAttribute("printerModels", printerService.getAllPrinterModels());
     }
 
 }

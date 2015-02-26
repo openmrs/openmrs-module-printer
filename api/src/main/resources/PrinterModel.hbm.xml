@@ -4,9 +4,9 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="org.openmrs.module.printer.Printer" table="printer_printer">
+    <class name="org.openmrs.module.printer.PrinterModel" table="printer_printer_model">
 
-        <id name="printerId" type="int" column="printer_id" unsaved-value="0">
+        <id name="printerModelId" type="int" column="printer_model_id" unsaved-value="0">
             <generator class="native"/>
         </id>
 
@@ -14,23 +14,13 @@
 
         <property name="name" type="java.lang.String" column="name" length="255" not-null="true"/>
 
-        <property name="ipAddress" type="java.lang.String" column="ip_address" length="50" not-null="true"/>
-
-        <property name="port" type="java.lang.String" column="port" length="10" not-null="true"/>
+        <property name="printHandler" type="java.lang.String" column="print_handler" length="255" not-null="true"/>
 
         <property name="type" column="type" length="50" not-null="true">
             <type name="org.openmrs.util.HibernateEnumType">
                 <param name="enumClassName">org.openmrs.module.printer.PrinterType</param>
             </type>
         </property>
-
-        <many-to-one name="physicalLocation" class="org.openmrs.Location">
-            <column name="physical_location"/>
-        </many-to-one>
-
-        <many-to-one name="model" class="org.openmrs.module.printer.PrinterModel">
-            <column name="model"/>
-        </many-to-one>
 
         <property name="dateCreated" type="java.util.Date" column="date_created"/>
 
@@ -41,4 +31,3 @@
 
 
 </hibernate-mapping>
-

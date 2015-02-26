@@ -12,11 +12,13 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.printer;
+package org.openmrs.module.printer.validator;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.printer.Printer;
+import org.openmrs.module.printer.PrinterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.Errors;
@@ -86,6 +88,10 @@ public class PrinterValidator implements Validator {
         if (printer.getType() == null) {
             errors.rejectValue("type", "error.required",
                     new Object[]{messageSourceService.getMessage("printer.type")}, null);
+        }
+
+        if (printer.getModel() != null && printer.getModel().getType() != printer.getType()) {
+            errors.rejectValue("type", "printer.error.typeMismatch", null, null);
         }
 
         if (printer.getName() != null && printer.getName().length() > 256) {

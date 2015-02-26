@@ -38,19 +38,19 @@ public class PrinterVelocityFunctionsComponentTest extends BaseModuleContextSens
     @Test
     public void testShouldReturnTrueBecauseDefaultPrinterExists() {
         Location location = locationService.getLocation(2);   // printer #1 has been set as the default label printer for location 2 in the test dataset
-        Assert.assertTrue(velocityFunctions.isDefaultPrinterConfigured(location, Printer.Type.LABEL));
+        Assert.assertTrue(velocityFunctions.isDefaultPrinterConfigured(location, PrinterType.LABEL));
     }
 
     @Test
     public void testShouldReturnFalseIfNoDefaultPrinterForLocation() {
         Location location = locationService.getLocation(3);   // no default printers have been configured for location 2
-        Assert.assertFalse(velocityFunctions.isDefaultPrinterConfigured(location, Printer.Type.LABEL));
+        Assert.assertFalse(velocityFunctions.isDefaultPrinterConfigured(location, PrinterType.LABEL));
     }
 
     @Test
     public void testShouldReturnFalseIfNoDefaultPrinterOfProperTypeForLocation() {
         Location location = locationService.getLocation(2);   // printer #1 has been set as the default label printer for location 2, but it is a label printer
-       Assert.assertFalse(velocityFunctions.isDefaultPrinterConfigured(location, Printer.Type.ID_CARD));
+       Assert.assertFalse(velocityFunctions.isDefaultPrinterConfigured(location, PrinterType.ID_CARD));
     }
 
     @Test

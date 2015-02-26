@@ -23,7 +23,7 @@ public class PrinterVelocityContentContextProvider implements VelocityContextCon
 
         // better way to do this? adding all enum values to be available in context
         Map typeMap = new HashMap();
-        for (Printer.Type type : Printer.Type.values()) {
+        for (PrinterType type : PrinterType.values()) {
             typeMap.put(type.toString(), type);
         }
         printerVelocityContext.put("type", typeMap);

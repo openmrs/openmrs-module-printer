@@ -3,7 +3,7 @@
 
     def typeOptions = []
 
-     printerTypeOptions.each {
+     printerTypes.each {
          typeOptions.push([ label: ui.message("printer." + it), value:it ])
      }
 
@@ -11,6 +11,12 @@
 
     locations.each {
         locationOptions.push([ label: ui.format(it), value: it.id ])
+    }
+
+    def printerModelOptions = []
+
+    printerModels.each {
+        printerModelOptions.push([ label: ui.format(it.name), value: it.id ])
     }
 %>
 
@@ -45,6 +51,7 @@
         ${ ui.includeFragment("uicommons", "field/radioButtons", [ label: ui.message("printer.type"), formFieldName: "type", initialValue: (printer.type ?: ''), options: typeOptions ])}
         ${ ui.includeFragment("uicommons", "field/dropDown", [ label: ui.message("printer.physicalLocation"), formFieldName: "physicalLocation", initialValue: (printer.physicalLocation?.id ?: ''), options: locationOptions ])}
         ${ ui.includeFragment("uicommons", "field/text", [ label: ui.message("printer.name"), formFieldName: "name", initialValue: (printer.name ?: '') ])}
+        ${ ui.includeFragment("uicommons", "field/dropDown", [ label: ui.message("printer.model"), formFieldName: "model", initialValue: (printer.model?.id ?: ''), options: printerModelOptions ])}
         ${ ui.includeFragment("uicommons", "field/text", [ label: ui.message("printer.ipAddress"), formFieldName: "ipAddress", initialValue: (printer.ipAddress ?: '') ])}
         ${ ui.includeFragment("uicommons", "field/text", [ label: ui.message("printer.port"), formFieldName: "port",initialValue: (printer.port ?: '') ])}
     </fieldset>

@@ -58,11 +58,11 @@ public class PrinterServiceTest {
 
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.LABEL);
+        printer.setType(PrinterType.LABEL);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
         assertThat((Printer) location.getActiveAttributes(defaultLabelPrinterAttributeType).get(0).getValue(), is(printer));
     }
@@ -72,13 +72,13 @@ public class PrinterServiceTest {
 
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.LABEL);
+        printer.setType(PrinterType.LABEL);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         assertThat(fetchedPrinter, is(printer));
     }
 
@@ -87,11 +87,11 @@ public class PrinterServiceTest {
 
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.ID_CARD, printer);
+        printerService.setDefaultPrinter(location, PrinterType.ID_CARD, printer);
 
         assertThat((Printer) location.getActiveAttributes(defaultIdCardPrinterAttributeType).get(0).getValue(), is(printer));
     }
@@ -101,13 +101,13 @@ public class PrinterServiceTest {
 
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.ID_CARD, printer);
+        printerService.setDefaultPrinter(location, PrinterType.ID_CARD, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.ID_CARD);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.ID_CARD);
         assertThat(fetchedPrinter, is(printer));
     }
 
@@ -117,15 +117,15 @@ public class PrinterServiceTest {
         // first set a default printer
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.ID_CARD, printer);
+        printerService.setDefaultPrinter(location, PrinterType.ID_CARD, printer);
 
         // now set it to back to null
-        printerService.setDefaultPrinter(location, Printer.Type.ID_CARD, null);
-        assertNull(printerService.getDefaultPrinter(location, Printer.Type.ID_CARD));
+        printerService.setDefaultPrinter(location, PrinterType.ID_CARD, null);
+        assertNull(printerService.getDefaultPrinter(location, PrinterType.ID_CARD));
 
     }
 
@@ -135,14 +135,14 @@ public class PrinterServiceTest {
 
         Printer printer = new Printer();
         printer.setId(1);
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         Location location = new Location(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.ID_CARD, printer);
+        printerService.setDefaultPrinter(location, PrinterType.ID_CARD, printer);
 
         // note that we set the default ID CARD printer, but then try to fetch the default label printer
-        assertNull(printerService.getDefaultPrinter(location, Printer.Type.LABEL));
+        assertNull(printerService.getDefaultPrinter(location, PrinterType.LABEL));
     }
 
 

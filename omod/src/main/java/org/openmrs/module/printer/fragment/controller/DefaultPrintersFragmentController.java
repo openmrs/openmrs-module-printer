@@ -17,6 +17,7 @@ package org.openmrs.module.printer.fragment.controller;
 import org.openmrs.Location;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
+import org.openmrs.module.printer.PrinterType;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
@@ -28,7 +29,7 @@ public class DefaultPrintersFragmentController {
 
 
     public FragmentActionResult saveDefaultPrinter(@RequestParam (value = "location", required =  true) Location location,
-                                                   @RequestParam (value = "type", required = true) Printer.Type type,
+                                                   @RequestParam (value = "type", required = true) PrinterType type,
                                                    @RequestParam (value = "printer", required = false) Printer printer,
                                                    @SpringBean("printerService") PrinterService printerService,
                                                    UiUtils ui) {

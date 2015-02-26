@@ -14,18 +14,25 @@
 
 package org.openmrs.module.printer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.printer.db.PrinterDAO;
+import org.openmrs.module.printer.db.PrinterModelDAO;
+import org.openmrs.module.printer.handler.PrintHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterService {
@@ -34,8 +41,11 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
     private PrinterDAO printerDAO;
 
+    private PrinterModelDAO printerModelDAO;
+
     private LocationService locationService;
 
+    private Map<String,PrintHandler> printHandlers = new HashMap<String, PrintHandler>();
 
     /**
      * A map from the id of an identifier source, to an object we can lock on for that identifier source
@@ -43,13 +53,20 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
      */
     private ConcurrentHashMap<Integer, Object> printerLocks = new ConcurrentHashMap<Integer, Object>();
 
-
     public void setPrinterDAO(PrinterDAO printerDAO) {
         this.printerDAO = printerDAO;
     }
 
+    public void setPrinterModelDAO(PrinterModelDAO printerModelDAO) {
+        this.printerModelDAO = printerModelDAO;
+    }
+
     public void setLocationService(LocationService locationService) {
         this.locationService = locationService;
+    }
+
+    public void setPrintHandlers(Map<String, PrintHandler> printHandlers) {
+        this.printHandlers = printHandlers;
     }
 
     @Override
@@ -66,7 +83,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
     @Override
     @Transactional(readOnly = true)
-    public List<Printer> getPrintersByType(Printer.Type type) {
+    public List<Printer> getPrintersByType(PrinterType type) {
         return printerDAO.getPrintersByType(type);
     }
 
@@ -83,7 +100,46 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
-    public void setDefaultPrinter(Location location, Printer.Type type, Printer printer) {
+    @Transactional
+    public void deletePrinter(Printer printer) {
+        // make sure this printer isn't assigned as the default printer for any locations
+        removePrinterAsDefault(printer);
+        printerDAO.delete(printer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PrinterModel getPrinterModelById(Integer id) {
+        return printerModelDAO.getById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PrinterModel> getAllPrinterModels() {
+        return printerModelDAO.getAll();
+    }
+
+    @Override
+    @Transactional
+    public void savePrinterModel(PrinterModel printerModel) {
+        printerModelDAO.saveOrUpdate(printerModel);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PrinterModel> getPrinterModelsByType(PrinterType type) {
+        return printerModelDAO.getPrinterModelsByType(type);
+    }
+
+    @Override
+    @Transactional
+    public void deletePrinterModel(PrinterModel printerModel) {
+        printerModelDAO.delete(printerModel);
+    }
+
+    @Override
+    @Transactional
+    public void setDefaultPrinter(Location location, PrinterType type, Printer printer) {
 
         LocationAttributeType locationAttributeType = getLocationAttributeTypeDefaultPrinter(type);
 
@@ -103,7 +159,8 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
-    public Printer getDefaultPrinter(Location location, Printer.Type type) {
+    @Transactional(readOnly = true)
+    public Printer getDefaultPrinter(Location location, PrinterType type) {
 
         List<LocationAttribute> defaultPrinters = location.getActiveAttributes(getLocationAttributeTypeDefaultPrinter(type));
 
@@ -119,7 +176,8 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
-    public List<Location> getLocationsWithDefaultPrinter(Printer.Type type) {
+    @Transactional(readOnly = true)
+    public List<Location> getLocationsWithDefaultPrinter(PrinterType type) {
 
         List<Location> locationsWithDefaultPrinter = new ArrayList<Location>();
 
@@ -151,12 +209,18 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
     @Override
-    public void printViaSocket(String data, Printer.Type type, Location location, String encoding) throws UnableToPrintViaSocketException {
+    @Transactional(readOnly = true)
+    public boolean isNameAllocatedToAnotherPrinterModel(PrinterModel printerModel) {
+        return printerModelDAO.isNameAllocatedToAnotherPrinterModel(printerModel);
+    }
+
+    @Override
+    public void printViaSocket(String data, PrinterType type, Location location, String encoding) throws UnableToPrintViaSocketException {
         printViaSocket(data, type, location, encoding, false, null);
     }
 
     @Override
-    public void printViaSocket(String data, Printer.Type type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
+    public void printViaSocket(String data, PrinterType type, Location location, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException {
 
         Printer printer = getDefaultPrinter(location, type);
@@ -178,15 +242,78 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     public void printViaSocket(String data, Printer printer, String encoding, Boolean printInSeparateThread, Integer wait)
             throws UnableToPrintViaSocketException {
 
-        PrintViaSocket printViaSocket = new PrintViaSocket(data, printer, encoding, wait, getPrinterLock(printer.getPrinterId()));
+        Map<String,Object> paramMap = new HashMap<String,Object>();
+        paramMap.put("encoding", encoding);
+        paramMap.put("wait", wait);
+        paramMap.put("data", data);
 
-        if (printInSeparateThread) {
-            new Thread(printViaSocket).start();
+        try {
+            print(paramMap, printer, printInSeparateThread, printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME) );
+        }
+        catch (UnableToPrintException e) {
+            throw new UnableToPrintViaSocketException("Unable to print via socket to printer " + printer,e);
+        }
+    }
+
+    @Override
+    public void print(Map<String, Object> paramMap, Printer printer, Boolean printInSeparateThread)
+        throws UnableToPrintException {
+
+        PrintHandler handler;
+        String handlerName = printer.getModel() != null ? printer.getModel().getPrintHandler() : null;
+
+        if (StringUtils.isNotBlank(handlerName)) {
+            handler = printHandlers.get(handlerName);
+            if (handler == null) {
+                throw new APIException("Unable to find print handler " + handlerName);
+            }
         }
         else {
-            printViaSocket.printViaSocket();
+            // default handler is the socket handler
+            handler = printHandlers.get(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
         }
 
+        print(paramMap, printer, printInSeparateThread, handler);
+    }
+
+    @Override
+    public void print(Map<String, Object> paramMap, Printer printer, Boolean printInSeparateThread, PrintHandler printHandler) throws UnableToPrintException {
+
+        PrintThread printThread = new PrintThread(printer, paramMap, getPrinterLock(printer.getPrinterId()), printHandler);
+
+        if (printInSeparateThread) {
+            new Thread(printThread).start();
+        }
+        else {
+            printThread.print();
+        }
+    }
+
+    @Override
+    public Collection<PrintHandler> getRegisteredPrintHandlers() {
+        return printHandlers.values();
+    }
+
+    @Override
+    public void registerPrintHandler(PrintHandler printHandler) {
+        printHandlers.put(printHandler.getBeanName(), printHandler);
+    }
+
+    @Override
+    public PrintHandler getRegisteredPrintHandlerByName(String beanName) {
+        if (printHandlers.containsKey(beanName)) {
+            return printHandlers.get(beanName);
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public void unregisterPrintHandler(String beanName) {
+        if(printHandlers.containsKey(beanName)) {
+            printHandlers.remove(beanName);
+        }
     }
 
     private Object getPrinterLock(Integer printerId) {
@@ -196,7 +323,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     }
 
 
-    private LocationAttributeType getLocationAttributeTypeDefaultPrinter(Printer.Type type) {
+    private LocationAttributeType getLocationAttributeTypeDefaultPrinter(PrinterType type) {
 
         String locationAttributeTypeUuid = PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get(type.name());
         LocationAttributeType locationAttributeType = locationService.getLocationAttributeTypeByUuid(locationAttributeTypeUuid);
@@ -206,5 +333,21 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
 
         return locationAttributeType;
+    }
+
+    private void removePrinterAsDefault(Printer printer) {
+
+        LocationAttributeType type = getLocationAttributeTypeDefaultPrinter(printer.getType());
+
+        Map<LocationAttributeType, Object> attributeValues = new HashMap<LocationAttributeType, Object>();
+        attributeValues.put(type, printer);
+
+        for (Location location: locationService.getLocations(null, null,attributeValues, true, null, null)) {
+            for (LocationAttribute attr : location.getActiveAttributes(type)) {
+                attr.setVoided(true);
+            }
+            locationService.saveLocation(location);
+        }
+
     }
 }

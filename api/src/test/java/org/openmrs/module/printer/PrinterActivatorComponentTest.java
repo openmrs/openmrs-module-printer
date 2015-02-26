@@ -3,7 +3,6 @@ package org.openmrs.module.printer;
 import org.junit.Test;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
-import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,8 +21,8 @@ public class PrinterActivatorComponentTest extends BaseModuleContextSensitiveTes
         activator.willStart();
         activator.started();
 
-        LocationAttributeType defaultIdCardPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get(Printer.Type.ID_CARD.name()));
-        LocationAttributeType defaultLabelPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get(Printer.Type.LABEL.name()));
+        LocationAttributeType defaultIdCardPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get(PrinterType.ID_CARD.name()));
+        LocationAttributeType defaultLabelPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get(PrinterType.LABEL.name()));
 
         assertThat(defaultIdCardPrinter, is(notNullValue()));
         assertThat(defaultLabelPrinter, is(notNullValue()));

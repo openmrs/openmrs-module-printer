@@ -22,10 +22,16 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
+import org.openmrs.module.printer.handler.PrintHandler;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest {
 
@@ -47,7 +53,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Another Test Printer");
         printer.setIpAddress("192.1.1.8");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         printerService.savePrinter(printer);
 
@@ -63,12 +69,48 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     }
 
     @Test
+    public void testDeletePrinter() {
+
+        List<Printer> printers = printerService.getAllPrinters();
+
+        // sanity check
+        Assert.assertEquals(1, printers.size());
+
+        printerService.deletePrinter(printers.get(0));
+
+        printers = printerService.getAllPrinters();
+        Assert.assertEquals(0, printers.size());
+    }
+
+    @Test
+    public void testDeletePrinterShouldUnassignItAsDefaultForALocation() {
+
+        LocationAttributeType defaultLabelPrinter = locationService.getLocationAttributeType(1001);
+
+        // sanity check
+        Location loc1 = locationService.getLocation(1);
+        Location loc2 = locationService.getLocation(2);
+        Assert.assertEquals(1, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(1, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        List<Printer> printers = printerService.getAllPrinters();
+        printerService.deletePrinter(printers.get(0));
+
+        Assert.assertEquals(0, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(0, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        // make sure we can save the locations even those they have voided attributes that reference deleted printers
+        locationService.saveLocation(loc1);
+        locationService.saveLocation(loc2);
+    }
+
+    @Test
     public void testShouldReturnTrueIfAnotherPrinterAlreadyHasIpAddressAssigned() {
 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Another printer");
         differentPrinter.setIpAddress("192.1.1.2");   // printer in test dataset has this ip
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertTrue(printerService.isIpAddressAllocatedToAnotherPrinter(differentPrinter));
 
@@ -80,13 +122,13 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer localPrinter = new Printer();
         localPrinter.setName("Local printer");
         localPrinter.setIpAddress("127.0.0.1");
-        localPrinter.setType(Printer.Type.LABEL);
+        localPrinter.setType(PrinterType.LABEL);
         printerService.savePrinter(localPrinter);
 
         Printer anotherPrinter = new Printer();
         anotherPrinter.setName("Another printer");
         anotherPrinter.setIpAddress("127.0.0.1");
-        anotherPrinter.setType(Printer.Type.ID_CARD);
+        anotherPrinter.setType(PrinterType.ID_CARD);
 
         Assert.assertFalse(printerService.isIpAddressAllocatedToAnotherPrinter(anotherPrinter));
 
@@ -98,7 +140,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Another printer");
         differentPrinter.setIpAddress("192.1.1.8");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertFalse(printerService.isIpAddressAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -121,7 +163,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Test Printer");
         differentPrinter.setIpAddress("192.1.1.9");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertTrue(printerService.isNameAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -132,7 +174,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer differentPrinter = new Printer();
         differentPrinter.setName("Test Printer With Different Name");
         differentPrinter.setIpAddress("192.1.1.9");
-        differentPrinter.setType(Printer.Type.LABEL);
+        differentPrinter.setType(PrinterType.LABEL);
 
         Assert.assertFalse(printerService.isNameAllocatedToAnotherPrinter(differentPrinter));
     }
@@ -143,9 +185,9 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Location location = locationService.getLocation(1);
         Printer printer = printerService.getPrinterById(1);
 
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
     }
 
@@ -155,7 +197,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Location location = locationService.getLocation(2);
         Printer printer = printerService.getPrinterById(1);  // this has been set as the default printer for location 2 in dataset
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
 
     }
@@ -169,12 +211,12 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Another Test Printer");
         printer.setIpAddress("192.1.1.8");
-        printer.setType(Printer.Type.LABEL);
+        printer.setType(PrinterType.LABEL);
 
         printerService.savePrinter(printer);
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, printer);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, printer);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertEquals(printer, fetchedPrinter);
     }
 
@@ -182,16 +224,16 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldRemoveDefaultLabelPrinterForLocation() {
         Location location = locationService.getLocation(2); // a default printer for location 2 in has been set in the dataset
-        printerService.setDefaultPrinter(location, Printer.Type.LABEL, null);
+        printerService.setDefaultPrinter(location, PrinterType.LABEL, null);
 
-        Printer fetchedPrinter = printerService.getDefaultPrinter(location, Printer.Type.LABEL);
+        Printer fetchedPrinter = printerService.getDefaultPrinter(location, PrinterType.LABEL);
         Assert.assertNull(fetchedPrinter);
     }
 
     @Test
     public void testShouldGetAllLocationsWithDefaultPrinter() {
 
-        List<Location> locations = printerService.getLocationsWithDefaultPrinter(Printer.Type.LABEL);
+        List<Location> locations = printerService.getLocationsWithDefaultPrinter(PrinterType.LABEL);
 
         // in the test dataset, only location 2 has a default label printer
         Assert.assertEquals(2, locations.size());
@@ -210,7 +252,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Printer printer = new Printer();
         printer.setName("Test Label Printer");
         printer.setIpAddress("192.1.1.9");
-        printer.setType(Printer.Type.ID_CARD);
+        printer.setType(PrinterType.ID_CARD);
 
         LocationAttributeType defaultIdCardPrinter = locationService.getLocationAttributeTypeByUuid(PrinterConstants.LOCATION_ATTRIBUTE_TYPE_DEFAULT_PRINTER.get("LABEL"));
 
@@ -226,9 +268,149 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldGetPrinterByType() {
 
-        List<Printer> printers = printerService.getPrintersByType(Printer.Type.LABEL);
+        List<Printer> printers = printerService.getPrintersByType(PrinterType.LABEL);
         Assert.assertEquals(1, printers.size());
         Assert.assertEquals("Test Printer", printers.get(0).getName());
 
+    }
+
+    @Test
+    public void testSavePrinterModel() {
+
+        PrinterModel printerModel = new PrinterModel();
+        printerModel.setName("Another Test Printer Model");
+        printerModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        printerModel.setType(PrinterType.ID_CARD);
+
+        printerService.savePrinterModel(printerModel);
+
+        List<PrinterModel> printerModels = printerService.getAllPrinterModels();
+
+        // there is already a test printer model in the dataset, so there should be two printers now
+        Assert.assertEquals(2, printerModels.size());
+
+        // make sure the audit fields have been set
+        Assert.assertNotNull(printerModel.getDateCreated());
+        Assert.assertNotNull(printerModel.getCreator());
+        Assert.assertNotNull(printerModel.getUuid());
+    }
+
+    @Test
+    public void testDeletePrinterModel() {
+
+        List<PrinterModel> printerModels = printerService.getAllPrinterModels();
+
+        // sanity check
+        Assert.assertEquals(1, printerModels.size());
+
+        printerService.deletePrinterModel(printerModels.get(0));
+
+        printerModels = printerService.getAllPrinterModels();
+        Assert.assertEquals(0, printerModels.size());
+
+    }
+
+    @Test
+    public void testShouldReturnTrueIfAnotherPrinterModelAlreadyHasSameName() {
+
+        PrinterModel differentPrinterModel = new PrinterModel();
+        differentPrinterModel.setName("Test Printer Model");
+        differentPrinterModel.setType(PrinterType.LABEL);
+        differentPrinterModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+
+        Assert.assertTrue(printerService.isNameAllocatedToAnotherPrinterModel(differentPrinterModel));
+    }
+
+
+    @Test
+    public void testShouldReturnFalseIfAnotherPrinterModelDoesntHaveSameName() {
+
+        PrinterModel differentPrinterModel = new PrinterModel();
+        differentPrinterModel.setName("Different Printer Model Name");
+        differentPrinterModel.setType(PrinterType.LABEL);
+        differentPrinterModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+
+        Assert.assertFalse(printerService.isNameAllocatedToAnotherPrinterModel(differentPrinterModel));
+    }
+
+    @Test
+    public void testShouldGetPrinterModelByType() {
+
+        List<PrinterModel> printerModels = printerService.getPrinterModelsByType(PrinterType.ID_CARD);
+        Assert.assertEquals(0, printerModels.size());
+
+        printerModels = printerService.getPrinterModelsByType(PrinterType.LABEL);
+        Assert.assertEquals(1, printerModels.size());
+        Assert.assertEquals("Test Printer Model", printerModels.get(0).getName());
+    }
+
+    @Test
+    public void byDefaultOnlySocketPrintHandlerIsAvailable() {
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(1, printHandlers.size());
+        Assert.assertEquals(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME, printHandlers.iterator().next().getBeanName());
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldAddNewPrintHandler() {
+        printerService.registerPrintHandler(new MockPrintHandler());
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(2, printHandlers.size());
+
+
+        List<String> handlerNames = new ArrayList<String>();
+        Iterator<PrintHandler> i = printHandlers.iterator();
+        while (i.hasNext()) {
+            handlerNames.add(i.next().getBeanName());
+        }
+
+        Assert.assertTrue(handlerNames.contains("mockPrintHandler"));
+        Assert.assertTrue(handlerNames.contains("socketPrintHandler"));
+    }
+
+    @Test
+    @DirtiesContext
+    public void shouldUnregisterPrintHandler() {
+        printerService.unregisterPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(0, printHandlers.size());
+    }
+
+    @Test
+    public void unregisterPrintHandlerShouldNotFailIfHandlerNotFound() {
+        printerService.unregisterPrintHandler("blah");
+        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
+        Assert.assertEquals(1, printHandlers.size());
+    }
+
+    @Test
+    public void shouldFetchPrintHandlerByBeanName() {
+        PrintHandler printHandler = printerService.getRegisteredPrintHandlerByName(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
+        Assert.assertEquals(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME, printHandler.getBeanName());
+    }
+
+    @Test
+    public void shouldReturnNullIfNoHandlerMatchingName() {
+        PrintHandler printHandler = printerService.getRegisteredPrintHandlerByName("bogus name");
+        Assert.assertNull(printHandler);
+    }
+
+    public class MockPrintHandler implements PrintHandler {
+
+        @Override
+        public String getDisplayName() {
+            return "Mock Print Handler";
+        }
+
+        @Override
+        public String getBeanName() {
+            return "mockPrintHandler";
+        }
+
+        @Override
+        public void print(Printer printer, Map<String, Object> paramMap) throws UnableToPrintException {
+            // do nothing
+        }
     }
 }

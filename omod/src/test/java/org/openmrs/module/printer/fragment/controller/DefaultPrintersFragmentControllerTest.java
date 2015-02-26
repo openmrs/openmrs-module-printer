@@ -23,6 +23,7 @@ import org.openmrs.Location;
 import org.openmrs.module.appui.TestUiUtils;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
+import org.openmrs.module.printer.PrinterType;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
@@ -36,7 +37,7 @@ public class DefaultPrintersFragmentControllerTest {
     public void testSaveDefaultPrinter() throws Exception {
         DefaultPrintersFragmentController controller = new DefaultPrintersFragmentController();
 
-        Printer.Type type = Printer.Type.ID_CARD;
+        PrinterType type = PrinterType.ID_CARD;
         Printer printer = new Printer();
         UiUtils ui = new TestUiUtils();
         Location location = new Location();

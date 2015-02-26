@@ -6,5 +6,6 @@
 <hibernate-configuration>
     <session-factory>
         <mapping resource="Printer.hbm.xml"/>
+        <mapping resource="PrinterModel.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
