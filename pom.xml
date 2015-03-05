@@ -44,7 +44,7 @@
         <uiframeworkModuleVersion>3.2.2</uiframeworkModuleVersion>
         <uicommonsModuleVersion>1.3</uicommonsModuleVersion>
         <appuiModuleVersion>1.2.2</appuiModuleVersion>
-        <htmlformentryVersion>2.4</htmlformentryVersion>
+        <htmlformentryVersion>2.5</htmlformentryVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
