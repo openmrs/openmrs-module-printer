@@ -34,7 +34,7 @@
 	</modules>
 	
 	<properties>
-		<openMRSVersion>1.9.8</openMRSVersion>
+		<openMRSVersion>1.10.1</openMRSVersion>
         <emrApiModuleVersion>1.4</emrApiModuleVersion>
         <reportingModuleVersion>0.9.2.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
@@ -98,7 +98,14 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api-1.9</artifactId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrApiModuleVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api-1.10</artifactId>
             <version>${emrApiModuleVersion}</version>
             <scope>provided</scope>
         </dependency>
@@ -131,6 +138,14 @@
             <version>${htmlformentryVersion}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>htmlformentry-api-1.10</artifactId>
+            <version>${htmlformentryVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        
 
         <!-- OpenMRS modules simply required to fire up the application context when running component tests -->
 
@@ -208,12 +223,12 @@
                     <properties>
                         <property>
                             <name>openMRSVersion</name>
-                            <version>[1.9.0,1.10.0-!)</version>
+                            <version>[1.10.0,1.11.0-!)</version>
                             <banSnapshots>true</banSnapshots>
                         </property>
                         <property>
                             <name>openMRSwebVersion</name>
-                            <version>[1.9.0,1.10.0-!)</version>
+                            <version>[1.10.0,1.11.0-!)</version>
                             <banSnapshots>true</banSnapshots>
                         </property>
                     </properties>
