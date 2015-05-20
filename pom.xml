@@ -34,7 +34,7 @@
 	</modules>
 	
 	<properties>
-		<openMRSVersion>1.9.8</openMRSVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
         <emrApiModuleVersion>1.6</emrApiModuleVersion>
         <reportingModuleVersion>0.9.4</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
