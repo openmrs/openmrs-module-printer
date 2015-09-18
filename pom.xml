@@ -39,7 +39,7 @@
         <reportingModuleVersion>0.9.6</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
-        <providermanagementModuleVersion>2.2</providermanagementModuleVersion>
+        <providermanagementModuleVersion>2.3</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.3</appframeworkModuleVersion>
         <uiframeworkModuleVersion>3.4</uiframeworkModuleVersion>
         <uicommonsModuleVersion>1.6</uicommonsModuleVersion>
