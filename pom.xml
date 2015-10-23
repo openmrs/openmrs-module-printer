@@ -98,6 +98,13 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrApiModuleVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>emrapi-api-1.10</artifactId>
             <version>${emrApiModuleVersion}</version>
             <scope>provided</scope>
@@ -128,6 +135,13 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>htmlformentry-api</artifactId>
+            <version>${htmlformentryVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>htmlformentry-api-1.10</artifactId>
             <version>${htmlformentryVersion}</version>
             <scope>provided</scope>
         </dependency>
