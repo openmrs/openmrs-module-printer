@@ -98,7 +98,7 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api-1.9</artifactId>
+            <artifactId>emrapi-api-1.10</artifactId>
             <version>${emrApiModuleVersion}</version>
             <scope>provided</scope>
         </dependency>
