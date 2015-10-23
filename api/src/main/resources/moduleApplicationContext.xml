@@ -28,14 +28,14 @@
                 <property name="printerDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.db.HibernatePrinterDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory"/>
+                            <ref bean="dbSessionFactory"/>
                         </property>
                     </bean>
                 </property>
                 <property name="printerModelDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.db.HibernatePrinterModelDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory"/>
+                            <ref bean="dbSessionFactory"/>
                         </property>
                     </bean>
                 </property>
