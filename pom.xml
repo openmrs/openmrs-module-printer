@@ -38,7 +38,7 @@
         <emrApiModuleVersion>1.13-SNAPSHOT</emrApiModuleVersion>
         <reportingModuleVersion>0.9.9-SNAPSHOT</reportingModuleVersion>
         <calculationModuleVersion>1.2-SNAPSHOT</calculationModuleVersion>
-        <serializationXstreamModuleVersion>0.2.10-SNAPSHOT</serializationXstreamModuleVersion>
+        <serializationXstreamModuleVersion>0.2.10</serializationXstreamModuleVersion>
         <providermanagementModuleVersion>2.4-SNAPSHOT</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.5-SNAPSHOT</appframeworkModuleVersion>
         <uiframeworkModuleVersion>3.5-SNAPSHOT</uiframeworkModuleVersion>
