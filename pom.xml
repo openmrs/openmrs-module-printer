@@ -44,7 +44,7 @@
         <uiframeworkModuleVersion>3.5-SNAPSHOT</uiframeworkModuleVersion>
         <uicommonsModuleVersion>1.8-SNAPSHOT</uicommonsModuleVersion>
         <appuiModuleVersion>1.5-SNAPSHOT</appuiModuleVersion>
-        <htmlformentryVersion>2.8-SNAPSHOT</htmlformentryVersion>
+        <htmlformentryVersion>3.0-SNAPSHOT</htmlformentryVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
