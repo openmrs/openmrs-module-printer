@@ -1,14 +1,18 @@
 package org.openmrs.module.printer;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.printer.handler.PrintHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class PrintThreadTest {
 
     @Test
@@ -18,7 +22,7 @@ public class PrintThreadTest {
         printer.setIpAddress("127.0.0.1") ;
         printer.setPort("9100");
 
-        Object printerLock = new Object();
+        Lock printerLock = new ReentrantLock();
 
         Map<String, Object> paramMap1 = new HashMap<String, Object>();
         paramMap1.put("wait", 10000);

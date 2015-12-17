@@ -29,15 +29,13 @@ import org.openmrs.module.printer.handler.PrintHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterService {
 
@@ -52,10 +50,10 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     private Map<String,PrintHandler> printHandlers = new HashMap<String, PrintHandler>();
 
     /**
-     * A map from the id of an identifier source, to an object we can lock on for that identifier source
+     * A map from the id of an identifier source, to an object we can lock on for that printer
      * (Idea stolen from IDGen module... )
      */
-    private ConcurrentHashMap<Integer, Object> printerLocks = new ConcurrentHashMap<Integer, Object>();
+    private ConcurrentHashMap<Integer, Lock> printerLocks = new ConcurrentHashMap<Integer, Lock>();
 
     public void setPrinterDAO(PrinterDAO printerDAO) {
         this.printerDAO = printerDAO;
@@ -286,9 +284,15 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         PrintThread printThread = new PrintThread(printer, paramMap, getPrinterLock(printer.getPrinterId()), printHandler);
 
         if (printInSeparateThread) {
+            log.error("Printing in separate thread no longer supported.");
+        }
+
+        printThread.print();
+
+       /* if (printInSeparateThread) {
             try {
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
-                executorService.invokeAll(Arrays.asList(Executors.callable(printThread)), 2, TimeUnit.MINUTES);
+                executorService.invokeAll(Arrays.asList(Executors.callable(printThread)));
             }
             catch (InterruptedException e) {
                 log.error("Print job interrupted for printer " + printer.getName());
@@ -297,7 +301,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
         else {
             printThread.print();
-        }
+        }*/
     }
 
     @Override
@@ -327,9 +331,9 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         }
     }
 
-    private Object getPrinterLock(Integer printerId) {
+    private Lock getPrinterLock(Integer printerId) {
         // this method does not need to be synchronized, because putIfAbsent is atomic
-        printerLocks.putIfAbsent(printerId, new Object());
+        printerLocks.putIfAbsent(printerId, new ReentrantLock());
         return printerLocks.get(printerId);
     }
 

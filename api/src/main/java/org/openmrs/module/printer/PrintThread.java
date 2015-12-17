@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.printer.handler.PrintHandler;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Implementing socket printing in a separate thread so that it can be performed asynchronously
@@ -17,11 +19,11 @@ public class PrintThread implements Runnable {
 
     private Map<String,Object> paramMap;
 
-    private Object printerLock;
+    private Lock printerLock;
 
     private PrintHandler printHandler;
 
-    public PrintThread(Printer printer, Map<String, Object> paramMap, Object printerLock, PrintHandler printHandler) {
+    public PrintThread(Printer printer, Map<String, Object> paramMap, Lock printerLock, PrintHandler printHandler) {
         this.printer = printer;
         this.paramMap = paramMap;
         this.printerLock = printerLock;
@@ -42,8 +44,25 @@ public class PrintThread implements Runnable {
 
     public void print() throws UnableToPrintException {
         // only allow one call to a printer at time
-        synchronized (printerLock) {
-            printHandler.print(printer, paramMap);
+        boolean hasLock = false;
+        try {
+            hasLock = printerLock.tryLock(1, TimeUnit.MINUTES);
+            if (hasLock) {
+                log.info("Locking printer with lock " + printerLock);
+                printHandler.print(printer, paramMap);
+            }
+            else {
+                log.error("Unable to lock printer with lock " + printerLock);
+            }
+        }
+        catch (InterruptedException e) {
+            log.error("Interrupted while trying to lock printer");
+        }
+        finally {
+            if (hasLock) {
+                log.info("Unlocking printer with lock " + printerLock);
+                printerLock.unlock();
+            }
         }
     }
 
@@ -55,7 +74,7 @@ public class PrintThread implements Runnable {
         this.paramMap = paramMap;
     }
 
-    public void setPrinterLock(Object printerLock) {
+    public void setPrinterLock(Lock printerLock) {
         this.printerLock = printerLock;
     }
 
