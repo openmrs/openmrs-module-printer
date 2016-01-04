@@ -48,11 +48,11 @@ public class PrintThread implements Runnable {
         try {
             hasLock = printerLock.tryLock(1, TimeUnit.MINUTES);
             if (hasLock) {
-                log.info("Locking printer with lock " + printerLock);
+                log.info("Locking printer " + printer.getName() + " with lock " + printerLock);
                 printHandler.print(printer, paramMap);
             }
             else {
-                log.error("Unable to lock printer with lock " + printerLock);
+                log.error("Unable to lock printer " + printer.getName() + " with lock " + printerLock);
             }
         }
         catch (InterruptedException e) {
@@ -60,7 +60,7 @@ public class PrintThread implements Runnable {
         }
         finally {
             if (hasLock) {
-                log.info("Unlocking printer with lock " + printerLock);
+                log.info("Unlocking printer "  + printer.getName() + " with lock " + printerLock);
                 printerLock.unlock();
             }
         }
