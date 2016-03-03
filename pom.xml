@@ -171,6 +171,27 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>serialization.xstream-api-1.9</artifactId>
+            <version>${serializationXstreamModuleVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>serialization.xstream-api-1.10</artifactId>
+            <version>${serializationXstreamModuleVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>serialization.xstream-api-2.0</artifactId>
+            <version>${serializationXstreamModuleVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>providermanagement-api</artifactId>
             <version>${providermanagementModuleVersion}</version>
             <scope>test</scope>
