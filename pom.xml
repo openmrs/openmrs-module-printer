@@ -42,7 +42,7 @@
         <providermanagementModuleVersion>2.5.0</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.9</appframeworkModuleVersion>
         <uiframeworkModuleVersion>3.7</uiframeworkModuleVersion>
-        <uicommonsModuleVersion>1.9</uicommonsModuleVersion>
+        <uicommonsModuleVersion>2.0</uicommonsModuleVersion>
         <appuiModuleVersion>1.6</appuiModuleVersion>
         <htmlformentryVersion>3.2</htmlformentryVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
