@@ -43,7 +43,7 @@
         <appframeworkModuleVersion>2.9</appframeworkModuleVersion>
         <uiframeworkModuleVersion>3.8</uiframeworkModuleVersion>
         <uicommonsModuleVersion>2.0</uicommonsModuleVersion>
-        <appuiModuleVersion>1.6</appuiModuleVersion>
+        <appuiModuleVersion>1.7</appuiModuleVersion>
         <htmlformentryVersion>3.3.0</htmlformentryVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
