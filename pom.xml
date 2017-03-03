@@ -147,6 +147,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>metadatamapping-api</artifactId>
+            <version>${metadatamappingVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- OpenMRS modules simply required to fire up the application context when running component tests -->
 
         <dependency>
@@ -202,13 +209,6 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>appframework-api</artifactId>
             <version>${appframeworkModuleVersion}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>metadatamapping-api</artifactId>
-            <version>${metadatamappingVersion}</version>
             <scope>test</scope>
         </dependency>
 
