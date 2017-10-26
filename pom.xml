@@ -36,12 +36,12 @@
 	<properties>
 		<openMRSVersion>1.10.4</openMRSVersion>
         <emrApiModuleVersion>1.23.0</emrApiModuleVersion>
-        <reportingModuleVersion>1.13.0</reportingModuleVersion>
+        <reportingModuleVersion>1.14.0</reportingModuleVersion>
         <calculationModuleVersion>1.2</calculationModuleVersion>
-        <serializationXstreamModuleVersion>0.2.12</serializationXstreamModuleVersion>
-        <providermanagementModuleVersion>2.8.0</providermanagementModuleVersion>
+        <serializationXstreamModuleVersion>0.2.13</serializationXstreamModuleVersion>
+        <providermanagementModuleVersion>2.9.0</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.10.0</appframeworkModuleVersion>
-        <uiframeworkModuleVersion>3.12.0</uiframeworkModuleVersion>
+        <uiframeworkModuleVersion>3.13.0</uiframeworkModuleVersion>
         <uicommonsModuleVersion>2.4.0</uicommonsModuleVersion>
         <appuiModuleVersion>1.8.0</appuiModuleVersion>
         <htmlformentryVersion>3.4.0</htmlformentryVersion>
