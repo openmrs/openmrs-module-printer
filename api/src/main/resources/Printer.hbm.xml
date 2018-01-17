@@ -19,8 +19,9 @@
         <property name="port" type="java.lang.String" column="port" length="10" not-null="true"/>
 
         <property name="type" column="type" length="50" not-null="true">
-            <type name="org.openmrs.util.HibernateEnumType">
-                <param name="enumClassName">org.openmrs.module.printer.PrinterType</param>
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.openmrs.module.printer.PrinterType</param>
+                <param name="useNamed">true</param>
             </type>
         </property>
 
