@@ -16,7 +16,6 @@ package org.openmrs.module.printer;
 
 import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
@@ -26,13 +25,9 @@ import org.openmrs.api.LocationService;
 import org.openmrs.module.printer.handler.PrintHandler;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest {
 
@@ -353,34 +348,6 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     }
 
     @Test
-    @Ignore
-    @DirtiesContext
-    public void shouldAddNewPrintHandler() {
-        printerService.registerPrintHandler(new MockPrintHandler());
-        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
-        Assert.assertEquals(2, printHandlers.size());
-
-
-        List<String> handlerNames = new ArrayList<String>();
-        Iterator<PrintHandler> i = printHandlers.iterator();
-        while (i.hasNext()) {
-            handlerNames.add(i.next().getBeanName());
-        }
-
-        Assert.assertTrue(handlerNames.contains("mockPrintHandler"));
-        Assert.assertTrue(handlerNames.contains("socketPrintHandler"));
-    }
-
-    @Test
-    @Ignore
-    @DirtiesContext
-    public void shouldUnregisterPrintHandler() {
-        printerService.unregisterPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
-        Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
-        Assert.assertEquals(0, printHandlers.size());
-    }
-
-    @Test
     public void unregisterPrintHandlerShouldNotFailIfHandlerNotFound() {
         printerService.unregisterPrintHandler("blah");
         Collection<PrintHandler> printHandlers = printerService.getRegisteredPrintHandlers();
@@ -398,22 +365,5 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         PrintHandler printHandler = printerService.getRegisteredPrintHandlerByName("bogus name");
         Assert.assertNull(printHandler);
     }
-
-    public class MockPrintHandler implements PrintHandler {
-
-        @Override
-        public String getDisplayName() {
-            return "Mock Print Handler";
-        }
-
-        @Override
-        public String getBeanName() {
-            return "mockPrintHandler";
-        }
-
-        @Override
-        public void print(Printer printer, Map<String, Object> paramMap) throws UnableToPrintException {
-            // do nothing
-        }
-    }
+    
 }
