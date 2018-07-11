@@ -42,7 +42,7 @@
         <providermanagementModuleVersion>2.10.0</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.11.0</appframeworkModuleVersion>
         <uiframeworkModuleVersion>3.13.0</uiframeworkModuleVersion>
-        <uicommonsModuleVersion>2.6.0</uicommonsModuleVersion>
+        <uicommonsModuleVersion>2.6.1</uicommonsModuleVersion>
         <appuiModuleVersion>1.8.0</appuiModuleVersion>
         <htmlformentryVersion>3.7.0</htmlformentryVersion>
         <metadatamappingVersion>1.3.4</metadatamappingVersion>
