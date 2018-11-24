@@ -113,6 +113,13 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api-pre2.2</artifactId>
+            <version>${emrApiModuleVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>uiframework-api</artifactId>
             <version>${uiframeworkModuleVersion}</version>
             <scope>provided</scope>
