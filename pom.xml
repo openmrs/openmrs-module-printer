@@ -41,7 +41,7 @@
         <serializationXstreamModuleVersion>0.2.14</serializationXstreamModuleVersion>
         <providermanagementModuleVersion>2.10.0</providermanagementModuleVersion>
         <appframeworkModuleVersion>2.13.0</appframeworkModuleVersion>
-        <uiframeworkModuleVersion>3.14.0</uiframeworkModuleVersion>
+        <uiframeworkModuleVersion>3.15.0</uiframeworkModuleVersion>
         <uicommonsModuleVersion>2.6.1</uicommonsModuleVersion>
         <appuiModuleVersion>1.9.0</appuiModuleVersion>
         <htmlformentryVersion>3.8.0</htmlformentryVersion>
