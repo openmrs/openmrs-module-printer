@@ -20,13 +20,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.Location;
-import org.openmrs.module.appui.TestUiUtils;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
 import org.openmrs.module.printer.PrinterType;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -39,11 +41,15 @@ public class DefaultPrintersFragmentControllerTest {
 
         PrinterType type = PrinterType.ID_CARD;
         Printer printer = new Printer();
-        UiUtils ui = new TestUiUtils();
         Location location = new Location();
         location.setName("Location");
 
-        PrinterService printerService = Mockito.mock(PrinterService.class);
+        UiUtils ui = mock(UiUtils.class);
+        when(ui.format(location)).thenReturn(location.getName());
+        when(ui.message("printer." + type)).thenReturn("printer." + type);
+        when(ui.message("printer.defaultUpdate", "printer." + type, location.getName())).thenReturn("printer.defaultUpdate:printer." + type + "," + location.getName());
+
+        PrinterService printerService = mock(PrinterService.class);
 
         FragmentActionResult result = controller.saveDefaultPrinter(location, type, printer, printerService, ui);
 
