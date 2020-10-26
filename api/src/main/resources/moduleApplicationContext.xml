@@ -63,7 +63,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>org.openmrs.module.printer.PrinterService</value>
-                <ref local="printerService"/>
+                <ref bean="printerService"/>
             </list>
         </property>
     </bean>
