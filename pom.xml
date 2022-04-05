@@ -37,7 +37,7 @@
 	<properties>
 		<openMRSVersion>2.0.0</openMRSVersion>
         <emrApiModuleVersion>1.32.0</emrApiModuleVersion>
-        <reportingModuleVersion>1.23.0</reportingModuleVersion>
+        <reportingModuleVersion>1.24.0</reportingModuleVersion>
         <calculationModuleVersion>1.3.0</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.15</serializationXstreamModuleVersion>
         <providermanagementModuleVersion>2.13.0</providermanagementModuleVersion>
