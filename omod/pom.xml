@@ -14,9 +14,9 @@
 
 	<dependencies>
 
-		
+
 		<!-- Begin OpenMRS modules -->
-		
+
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>${project.parent.artifactId}-api</artifactId>
@@ -30,13 +30,6 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>uicommons-omod</artifactId>
-			<version>${uicommonsModuleVersion}</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- End OpenMRS modules -->
 
@@ -82,7 +75,7 @@
 						<includeEmptyDirs>true</includeEmptyDirs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
