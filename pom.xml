@@ -46,7 +46,7 @@
         <uicommonsModuleVersion>2.21.0</uicommonsModuleVersion>
         <appuiModuleVersion>1.15.0</appuiModuleVersion>
         <htmlformentryVersion>3.13.1</htmlformentryVersion>
-        <metadatamappingVersion>1.4.0</metadatamappingVersion>
+        <metadatamappingVersion>1.5.0</metadatamappingVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
