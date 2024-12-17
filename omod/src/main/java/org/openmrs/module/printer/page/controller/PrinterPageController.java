@@ -17,6 +17,7 @@ package org.openmrs.module.printer.page.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.LocationService;
+import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.printer.Printer;
 import org.openmrs.module.printer.PrinterService;
 import org.openmrs.module.printer.PrinterType;
@@ -45,8 +46,9 @@ public class PrinterPageController {
 
     public void get(PageModel model, @MethodParam("getPrinter") Printer printer,
                     @SpringBean("printerService")  PrinterService printerService,
-                    @SpringBean("locationService") LocationService locationService) {
-        addReferenceData(model, locationService, printerService);
+                    @SpringBean("locationService") LocationService locationService,
+                    @SpringBean EmrApiProperties emrApiProperties) {
+        addReferenceData(model, locationService, printerService, emrApiProperties);
         model.addAttribute("printer", printer);
     }
 
@@ -54,6 +56,7 @@ public class PrinterPageController {
                        @SpringBean("printerService") PrinterService printerService,
                        @SpringBean("printerValidator") PrinterValidator printerValidator,
                        @SpringBean("locationService")LocationService locationService,
+                       @SpringBean EmrApiProperties emrApiProperties,
                        HttpServletRequest request) {
 
         printerValidator.validate(printer, errors);
@@ -78,14 +81,15 @@ public class PrinterPageController {
         }
 
         // redisplay the form with errors
-        addReferenceData(model, locationService, printerService);
+        addReferenceData(model, locationService, printerService, emrApiProperties);
         model.addAttribute("errors", errors);
         model.addAttribute("printer", printer);
         return null;
     }
 
-    private void addReferenceData(PageModel model, LocationService locationService, PrinterService printerService) {
-        model.addAttribute("locations", locationService.getAllLocations());
+    private void addReferenceData(PageModel model, LocationService locationService, PrinterService printerService, EmrApiProperties emrApiProperties) {
+        // TODO: maybe an actual "printer locations" tag?
+        model.addAttribute("locations", locationService.getLocationsByTag(emrApiProperties.getSupportsLoginLocationTag()));
         model.addAttribute("printerTypes", PrinterType.values());
         model.addAttribute("printerModels", printerService.getAllPrinterModels());
     }
