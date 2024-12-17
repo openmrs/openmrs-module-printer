@@ -47,6 +47,7 @@
         <appuiModuleVersion>1.16.0</appuiModuleVersion>
         <htmlformentryVersion>3.13.1</htmlformentryVersion>
         <metadatamappingVersion>1.5.0</metadatamappingVersion>
+        <webservicesRestVersion>2.5</webservicesRestVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
