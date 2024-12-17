@@ -31,7 +31,7 @@ public class DefaultPrintersPageController {
 
     public void get(PageModel model, @SpringBean("printerService") PrinterService printerService,
                     @SpringBean("locationService") LocationService locationService,
-                    @SpringBean("emrService") EmrApiProperties emrApiProperties) {
+                    @SpringBean EmrApiProperties emrApiProperties) {
 
         // TODO: maybe an actual "printer locations" tag?
         List<Location> locations = locationService.getLocationsByTag(emrApiProperties.getSupportsLoginLocationTag());
