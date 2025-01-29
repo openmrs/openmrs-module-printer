@@ -68,11 +68,12 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     public void testDeletePrinter() {
 
         List<Printer> printers = printerService.getAllPrinters();
+        Printer printer = printerService.getPrinterByName("Test Printer");
 
         // sanity check
         Assert.assertEquals(1, printers.size());
 
-        printerService.deletePrinter(printers.get(0));
+        printerService.deletePrinter(printer);
 
         printers = printerService.getAllPrinters();
         Assert.assertEquals(0, printers.size());
@@ -89,13 +90,38 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         Assert.assertEquals(1, loc1.getActiveAttributes(defaultLabelPrinter).size());
         Assert.assertEquals(1, loc2.getActiveAttributes(defaultLabelPrinter).size());
 
-        List<Printer> printers = printerService.getAllPrinters();
-        printerService.deletePrinter(printers.get(0));
+        Printer printer = printerService.getPrinterByName("Test Printer");
+        printerService.deletePrinter(printer);
 
         Assert.assertEquals(0, loc1.getActiveAttributes(defaultLabelPrinter).size());
         Assert.assertEquals(0, loc2.getActiveAttributes(defaultLabelPrinter).size());
 
-        // make sure we can save the locations even those they have voided attributes that reference deleted printers
+        // make sure we can  still save the locations
+        locationService.saveLocation(loc1);
+        locationService.saveLocation(loc2);
+    }
+
+    @Test
+    public void testUpdatePrinterTypeShouldUnassignItAsDefaultForALocation() {
+
+        LocationAttributeType defaultLabelPrinter = locationService.getLocationAttributeType(1001);
+
+        // sanity check
+        Location loc1 = locationService.getLocation(1);
+        Location loc2 = locationService.getLocation(2);
+        Assert.assertEquals(1, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(1, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        Printer printer = printerService.getPrinterByName("Test Printer");
+        PrinterModel idCardModel = printerService.getPrinterModelById(2);
+        printer.setType(PrinterType.ID_CARD);
+        printer.setModel(idCardModel);
+        printerService.deletePrinter(printer);
+
+        Assert.assertEquals(0, loc1.getActiveAttributes(defaultLabelPrinter).size());
+        Assert.assertEquals(0, loc2.getActiveAttributes(defaultLabelPrinter).size());
+
+        // make sure we can  still save the locations
         locationService.saveLocation(loc1);
         locationService.saveLocation(loc2);
     }
@@ -282,8 +308,8 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
 
         List<PrinterModel> printerModels = printerService.getAllPrinterModels();
 
-        // there is already a test printer model in the dataset, so there should be two printers now
-        Assert.assertEquals(2, printerModels.size());
+        // there is already a test printer model in the dataset, so there should be three printers models now
+        Assert.assertEquals(3, printerModels.size());
 
         // make sure the audit fields have been set
         Assert.assertNotNull(printerModel.getDateCreated());
@@ -297,12 +323,12 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
         List<PrinterModel> printerModels = printerService.getAllPrinterModels();
 
         // sanity check
-        Assert.assertEquals(1, printerModels.size());
+        Assert.assertEquals(2, printerModels.size());
 
         printerService.deletePrinterModel(printerModels.get(0));
 
         printerModels = printerService.getAllPrinterModels();
-        Assert.assertEquals(0, printerModels.size());
+        Assert.assertEquals(1, printerModels.size());
 
     }
 
@@ -310,7 +336,7 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     public void testShouldReturnTrueIfAnotherPrinterModelAlreadyHasSameName() {
 
         PrinterModel differentPrinterModel = new PrinterModel();
-        differentPrinterModel.setName("Test Printer Model");
+        differentPrinterModel.setName("Test Label Printer Model");
         differentPrinterModel.setType(PrinterType.LABEL);
         differentPrinterModel.setPrintHandler(PrinterConstants.SOCKET_PRINT_HANDLER_BEAN_NAME);
 
@@ -332,12 +358,12 @@ public class PrinterServiceComponentTest extends BaseModuleContextSensitiveTest 
     @Test
     public void testShouldGetPrinterModelByType() {
 
-        List<PrinterModel> printerModels = printerService.getPrinterModelsByType(PrinterType.ID_CARD);
+        List<PrinterModel> printerModels = printerService.getPrinterModelsByType(PrinterType.WRISTBAND);
         Assert.assertEquals(0, printerModels.size());
 
         printerModels = printerService.getPrinterModelsByType(PrinterType.LABEL);
         Assert.assertEquals(1, printerModels.size());
-        Assert.assertEquals("Test Printer Model", printerModels.get(0).getName());
+        Assert.assertEquals("Test Label Printer Model", printerModels.get(0).getName());
     }
 
     @Test
