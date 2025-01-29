@@ -92,6 +92,10 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     @Override
     @Transactional
     public void savePrinter(Printer printer) {
+        // just in case we may be changing the type of the printer, make sure it is not set as the default for any other type
+        if (printer.getPrinterId() != null) {
+            removePrinterAsDefaultForAllTypesExceptType(printer, printer.getType());
+        }
         printerDAO.saveOrUpdate(printer);
     }
 
@@ -105,7 +109,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
     @Transactional
     public void deletePrinter(Printer printer) {
         // make sure this printer isn't assigned as the default printer for any locations
-        removePrinterAsDefault(printer);
+        removePrinterAsDefaultForAllTypes(printer);
         printerDAO.delete(printer);
     }
 
@@ -145,12 +149,11 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
         LocationAttributeType locationAttributeType = getLocationAttributeTypeDefaultPrinter(type);
 
-        // if no printer is specified, void any existing default printer
-        if (printer == null) {
-            for (LocationAttribute attr : location.getActiveAttributes(locationAttributeType)) {
-                attr.setVoided(true);
-            }
-        } else {
+        for (LocationAttribute attr : location.getActiveAttributes(locationAttributeType)) {
+            location.getAttributes().remove(attr);
+        }
+
+        if (printer != null) {
             LocationAttribute defaultPrinter = new LocationAttribute();
             defaultPrinter.setAttributeType(locationAttributeType);
             defaultPrinter.setValue(printer);
@@ -350,16 +353,28 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
         return locationAttributeType;
     }
 
-    private void removePrinterAsDefault(Printer printer) {
+    private void removePrinterAsDefaultForAllTypes(Printer printer) {
+        removePrinterAsDefaultForAllTypesExceptType(printer, null);
+    }
 
-        LocationAttributeType type = getLocationAttributeTypeDefaultPrinter(printer.getType());
+    private void removePrinterAsDefaultForAllTypesExceptType(Printer printer, PrinterType printerType) {
+        for (PrinterType type : PrinterType.values()) {
+            if (printerType == null || printerType != type) {
+                removePrinterAsDefault(printer, type);
+            }
+        }
+    }
+
+    private void removePrinterAsDefault(Printer printer, PrinterType printerType) {
+
+        LocationAttributeType type = getLocationAttributeTypeDefaultPrinter(printerType);
 
         Map<LocationAttributeType, Object> attributeValues = new HashMap<LocationAttributeType, Object>();
         attributeValues.put(type, printer);
 
         for (Location location: locationService.getLocations(null, null,attributeValues, true, null, null)) {
             for (LocationAttribute attr : location.getActiveAttributes(type)) {
-                attr.setVoided(true);
+                location.getAttributes().remove(attr);
             }
             locationService.saveLocation(location);
         }
