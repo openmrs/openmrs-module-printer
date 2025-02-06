@@ -26,7 +26,7 @@
         <connection>scm:git:git@github.com:openmrs/openmrs-module-printer.git</connection>
         <developerConnection>scm:git:git@github.com:openmrs/openmrs-module-printer.git</developerConnection>
         <url>scm:git:git@github.com:openmrs/openmrs-module-printer.git</url>
-        <tag>1.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
 	<modules>
