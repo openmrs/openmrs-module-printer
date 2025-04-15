@@ -149,11 +149,12 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
         LocationAttributeType locationAttributeType = getLocationAttributeTypeDefaultPrinter(type);
 
-        for (LocationAttribute attr : location.getActiveAttributes(locationAttributeType)) {
-            location.getAttributes().remove(attr);
-        }
-
-        if (printer != null) {
+        // if no printer is specified, void any existing default printer
+        if (printer == null) {
+            for (LocationAttribute attr : location.getActiveAttributes(locationAttributeType)) {
+                attr.setVoided(true);
+            }
+        } else {
             LocationAttribute defaultPrinter = new LocationAttribute();
             defaultPrinter.setAttributeType(locationAttributeType);
             defaultPrinter.setValue(printer);
@@ -374,7 +375,7 @@ public class PrinterServiceImpl extends BaseOpenmrsService implements PrinterSer
 
         for (Location location: locationService.getLocations(null, null,attributeValues, true, null, null)) {
             for (LocationAttribute attr : location.getActiveAttributes(type)) {
-                location.getAttributes().remove(attr);
+                attr.setVoided(true);
             }
             locationService.saveLocation(location);
         }
